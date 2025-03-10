@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="file://$PROJECT_DIR$" libraries="{bootstrap-icons, dataTables.bootstrap5, font-awesome, jquery-3.7.0, remixicon}" />
+    <file url="file://$PROJECT_DIR$/serv-utilisateur" libraries="{font-awesome, remixicon}" />
+  </component>
+</project>
