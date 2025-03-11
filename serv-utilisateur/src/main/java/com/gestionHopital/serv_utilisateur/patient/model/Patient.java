@@ -3,6 +3,7 @@ package com.gestionHopital.serv_utilisateur.patient.model;
 
 import com.gestionHopital.serv_utilisateur.consultation.model.Consultation;
 import com.gestionHopital.serv_utilisateur.dossiermedical.model.DossierMedical;
+import com.gestionHopital.serv_utilisateur.hospitalisation.model.Hospitalisation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,4 +29,7 @@ public class Patient {
     private List<Consultation> consultations;
     @OneToOne(cascade = CascadeType.REMOVE)
     private DossierMedical dossierMedical;
+    @OneToMany(mappedBy = "patient", orphanRemoval = false)
+    private List<Hospitalisation> hospitalisations;
+
 }
