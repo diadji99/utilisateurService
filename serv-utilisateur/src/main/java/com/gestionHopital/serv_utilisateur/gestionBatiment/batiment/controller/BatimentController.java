@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -17,7 +19,7 @@ public class BatimentController {
     private BatimentService batimentService;
 
     @RequestMapping("")
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAll(Principal principal){
         List<Batiment> batiments = batimentService.findAll();
         return ResponseEntity.ok(batiments);
     }

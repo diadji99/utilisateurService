@@ -9,6 +9,14 @@ import com.gestionHopital.serv_utilisateur.Utilisateur.modele.Infirmier;
 import com.gestionHopital.serv_utilisateur.Utilisateur.service.AdministrateurService;
 import com.gestionHopital.serv_utilisateur.Utilisateur.service.InfirmierService;
 import com.gestionHopital.serv_utilisateur.Utilisateur.service.MedecinService;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.model.Batiment;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.service.BatimentService;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.lit.model.Lit;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.lit.service.LitService;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.model.Salle;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.service.SalleService;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.service.model.ServiceF;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.service.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -33,6 +41,15 @@ public class AdministrateurController {
     private AdministrateurService administrateurService;
     @Autowired
     private InfirmierService infirmierService;
+    @Autowired
+    private BatimentService batimentService;
+    @Autowired
+    private ServiceService serviceService;
+    @Autowired
+    private LitService litService;
+    @Autowired
+    private SalleService salleService;
+
 
     @PostMapping("/activerMedecin")
     public String activerMedecin(@RequestParam("id") Long id) {
@@ -52,13 +69,19 @@ public class AdministrateurController {
         Utilisateur admin = utilisateurService.rechercher_Utilisateur(principal.getName());
         List<Medecin> medecins = medecinService.listerMedecins();
         List<Infirmier> infirmiers = infirmierService.listerInfirmiers();
-
+        List<Batiment> batiments = batimentService.findAll();
+        List<ServiceF> services = serviceService.findAll();
+        List<Lit> lits = litService.findAll();
+        List<Salle> salles = salleService.findAll();
         // Ajout des attributs au modèle
         model.addAttribute("nom", admin.getNom());
         model.addAttribute("prenom", admin.getPrenom().charAt(0));
         model.addAttribute("medecins", medecins);
         model.addAttribute("infirmiers", infirmiers);
-
+        model.addAttribute("batiments",batiments);
+        model.addAttribute("services",services);
+        model.addAttribute("lits",lits);
+        model.addAttribute("salles",salles);
         return "admin"; // Nom du template Thymeleaf
     }
 
@@ -139,4 +162,8 @@ public class AdministrateurController {
         return "redirect:/Administrateur/Accueil";
     }
 
+    @GetMapping("/profile")
+    public String adminProfil(Model model){
+        return "admin_profile";
+    }
 }

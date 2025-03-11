@@ -19,7 +19,7 @@ public class ServUtilisateurApplication {
 		SpringApplication.run(ServUtilisateurApplication.class, args);
 	}
 
-	@Bean
+	/*@Bean
 	public CommandLineRunner initData(AdministrateurService administrateurService,
 									  UtilisateurService utilisateurService,
 									  PasswordEncoder passwordEncoder) {
@@ -42,5 +42,5 @@ public class ServUtilisateurApplication {
 			utilisateurService.ajouter_UtilisateurRoles(user_1, administrateur);
 		};
 	}
-
+	*/
 }
