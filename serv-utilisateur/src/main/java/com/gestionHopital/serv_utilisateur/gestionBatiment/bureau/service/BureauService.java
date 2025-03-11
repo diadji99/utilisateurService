@@ -29,26 +29,6 @@ public class BureauService {
         return bureauRepository.save(existing);
     }
 
-    public Bureau getBureau(Long id){
-        Bureau bureau = bureauRepository.findById(id).get();
-        Bureau bureau1 = new Bureau();
-        bureau1.setId(bureau.getId());bureau1.setNumero(bureau.getNumero());
-        bureau1.setService(bureau.getServiceF().getNom());
-        return bureau1;
-    }
-
-    public List<Bureau> getBureaux(){
-        List<Bureau> bureauList = bureauRepository.findAll();
-        List<Bureau> bureauDTOList = new ArrayList<>();
-        for(Bureau b : bureauList){
-            Bureau bureauDTO = getBureau(b.getId());
-            bureauDTOList.add(bureauDTO);
-        }
-        return bureauDTOList;
-    }
-
-
-
     public void delete(Bureau bureau){
         bureauRepository.delete(bureau);
     }

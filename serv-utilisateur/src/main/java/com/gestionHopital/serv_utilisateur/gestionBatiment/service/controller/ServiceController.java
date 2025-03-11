@@ -1,15 +1,18 @@
 package com.gestionHopital.serv_utilisateur.gestionBatiment.service.controller;
 
+import com.gestionHopital.serv_utilisateur.Authentification.modele.Utilisateur;
+import com.gestionHopital.serv_utilisateur.Authentification.service.UtilisateurService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.model.Batiment;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.service.BatimentService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.model.ServiceF;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -18,67 +21,68 @@ public class ServiceController {
 
     @Autowired
     private ServiceService serviceService;
+
     @Autowired
     private BatimentService batimentService;
-    @RequestMapping("")
-    public ResponseEntity<?> getServices(){
+    @Autowired
+    private UtilisateurService utilisateurService;
+    @GetMapping("")
+    public String getServices(Model model, Principal principal) {
+        Utilisateur user= utilisateurService.rechercher_Utilisateur(principal.getName());
+        model.addAttribute("prenom",user.getPrenom().charAt(0));
+        model.addAttribute("nom",user.getNom());
+
         List<ServiceF> serviceList = serviceService.findAll();
-        return ResponseEntity.ok(serviceList);
+        model.addAttribute("services", serviceList);
+        return "admin_Service"; // Vue Thymeleaf
     }
 
-    @RequestMapping("/{id}")
-    public ResponseEntity<?> getService(@PathVariable Long id){
-        ServiceF service = serviceService.findById(id);
-        if(service == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("le service n'existe pas");
-        }else{
-            return ResponseEntity.ok(service);
-        }
-    }
-
-    @RequestMapping("/{id}/ajouter")
-    public ResponseEntity<?> ajouterService(@PathVariable Long id, @RequestBody ServiceF service){
+    @PostMapping("/ajouter")
+    public String ajouterService(@RequestParam Long id, @ModelAttribute ServiceF service, RedirectAttributes redirectAttributes) {
         Batiment batiment = batimentService.findByid(id);
-        if(batiment != null){
+        if (batiment != null) {
             service.setBatiment(batiment);
             ServiceF created = serviceService.create(service);
-            if(created == null){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Le service existe déja");
-            }else{
-                return ResponseEntity.ok(created);
+            if (created != null) {
+                redirectAttributes.addFlashAttribute("success", "Service ajouté avec succès");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Le service existe déjà");
             }
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Le batiment n'existe pas");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Le bâtiment n'existe pas");
         }
+        return "redirect:/Administrateur/services";
     }
 
-    @RequestMapping("/{id}/modifier")
-    public ResponseEntity<?> modifierService(@PathVariable Long id,@RequestBody ServiceF update,@RequestParam Long batiment){
+    @PostMapping("/{id}/modifier")
+    public String modifierService(@PathVariable Long id, @ModelAttribute ServiceF update, @RequestParam Long batiment, RedirectAttributes redirectAttributes) {
         ServiceF existing = serviceService.findById(id);
-        if(existing != null){
-            if(batiment != null){
-                Batiment bat = batimentService.findByid(batiment);
+        if (existing != null) {
+            Batiment bat = batimentService.findByid(batiment);
+            if (bat != null) {
                 update.setBatiment(bat);
             }
-            ServiceF updated = serviceService.update(existing,update);
-            if (updated != null){
-                return ResponseEntity.ok(updated);
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("le service n'existe pas");
+            ServiceF updated = serviceService.update(existing, update);
+            if (updated != null) {
+                redirectAttributes.addFlashAttribute("success", "Service mis à jour avec succès");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Échec lors de la mise à jour");
             }
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Le service n'existe pas");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Le service n'existe pas");
         }
+        return "redirect:/Administrateur/services";
     }
 
-    @RequestMapping("/{id}/supprimer")
-    public ResponseEntity<?> supprimerService(@PathVariable Long id){
+    @PostMapping("/{id}/supprimer")
+    public String supprimerService(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         ServiceF service = serviceService.findById(id);
-        if(service != null){
+        if (service != null) {
             serviceService.delete(service);
-            return ResponseEntity.ok("Service supprimé");
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ce service n'existe pas");
+            redirectAttributes.addFlashAttribute("success", "Service supprimé avec succès");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Ce service n'existe pas");
         }
+        return "redirect:/Administrateur/services";
     }
 }

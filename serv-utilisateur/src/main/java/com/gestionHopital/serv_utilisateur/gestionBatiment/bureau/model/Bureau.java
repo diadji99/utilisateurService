@@ -1,5 +1,6 @@
 package com.gestionHopital.serv_utilisateur.gestionBatiment.bureau.model;
 
+import com.gestionHopital.serv_utilisateur.Utilisateur.modele.Medecin;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.model.ServiceF;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,8 +17,6 @@ public class Bureau {
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private ServiceF serviceF;
-
-    public void setService(String nom) {
-        this.serviceF.setNom(nom);
-    }
+    @OneToOne
+    private Medecin medecin;
 }

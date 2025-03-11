@@ -13,7 +13,6 @@ public class MedecinService {
     private MedecinRepository medecinRepository;
 
     public Medecin create(Medecin medecin){
-
         return medecinRepository.save(medecin);
     }
 

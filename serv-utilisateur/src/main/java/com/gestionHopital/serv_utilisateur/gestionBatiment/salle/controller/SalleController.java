@@ -1,80 +1,86 @@
 package com.gestionHopital.serv_utilisateur.gestionBatiment.salle.controller;
 
+import com.gestionHopital.serv_utilisateur.Authentification.modele.Utilisateur;
+import com.gestionHopital.serv_utilisateur.Authentification.service.UtilisateurService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.model.Salle;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.service.SalleService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.model.ServiceF;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/Administrateur/salles")
 public class SalleController {
+
     @Autowired
     private SalleService salleService;
+
     @Autowired
     private ServiceService serviceService;
+    @Autowired
+    private UtilisateurService utilisateurService;
 
-    @RequestMapping("")
-    public ResponseEntity<?> getAll(){
-        return ResponseEntity.ok(salleService.findAll());
+    @GetMapping("")
+    public String getAll(Model model, Principal principal) {
+        Utilisateur user= utilisateurService.rechercher_Utilisateur(principal.getName());
+        model.addAttribute("prenom",user.getPrenom().charAt(0));
+        model.addAttribute("nom",user.getNom());
+        model.addAttribute("salles", salleService.findAll());
+        return "admin_Salle";
     }
 
-    @RequestMapping("/{id}")
-    public ResponseEntity<?> getSalle(@PathVariable Long id){
-        Salle salle = salleService.findById(id);
-        if(salle != null){
-            return ResponseEntity.ok(salle);
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("salle inexistante");
-        }
-    }
-
-    @RequestMapping("/{id}/ajouter")
-    public ResponseEntity<?> ajouter(@PathVariable Long id,@RequestBody Salle salle){
+    @PostMapping("/ajouter")
+    public String ajouter(@RequestParam Long id, @ModelAttribute Salle salle, RedirectAttributes redirectAttributes) {
         ServiceF service = serviceService.findById(id);
-        if(service != null){
+        if (service != null) {
             salle.setServiceF(service);
-            Salle create = salleService.create(salle);
-            if(create != null){
-                return ResponseEntity.ok(create);
-            }else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Salle existe déja");
+            Salle created = salleService.create(salle);
+            if (created != null) {
+                redirectAttributes.addFlashAttribute("success", "Salle ajoutée avec succès");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "La salle existe déjà");
             }
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Service inexistant");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Service inexistant");
         }
+        return "redirect:/Administrateur/salles";
     }
 
-    @RequestMapping("/{id}/modifier")
-    public ResponseEntity<?> modifier(@PathVariable Long id,@RequestBody Salle update,@RequestParam(required = true) Long service){
+    @PostMapping("/{id}/modifier")
+    public String modifier(@PathVariable Long id, @ModelAttribute Salle update, @RequestParam Long service, RedirectAttributes redirectAttributes) {
         Salle existing = salleService.findById(id);
-        if(existing != null){
-            if(service != null){
-                ServiceF s = serviceService.findById(service);
-                update.setServiceF(s);
+        if (existing != null) {
+            ServiceF serviceF = serviceService.findById(service);
+            if (serviceF != null) {
+                update.setServiceF(serviceF);
             }
-            Salle updated = salleService.update(existing,update);
-            if(updated != null){
-                return ResponseEntity.ok(updated);
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("echec lors de la mise à jour");
+            Salle updated = salleService.update(existing, update);
+            if (updated != null) {
+                redirectAttributes.addFlashAttribute("success", "Salle mise à jour avec succès");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Échec lors de la mise à jour");
             }
-        }else{
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Salle introuvable");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Salle introuvable");
         }
+        return "redirect:/Administrateur/salles";
     }
-    @RequestMapping("/{id}/supprimer")
-    public ResponseEntity<?> delete(@PathVariable Long id){
+
+    @PostMapping("/{id}/supprimer")
+    public String supprimer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Salle salle = salleService.findById(id);
-        if(salle != null){
+        if (salle != null) {
             salleService.delete(salle);
-            return ResponseEntity.ok("salle supprimée");
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("salle inexistante");
+            redirectAttributes.addFlashAttribute("success", "Salle supprimée avec succès");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Salle inexistante");
         }
+        return "redirect:/Administrateur/salles";
     }
 }
