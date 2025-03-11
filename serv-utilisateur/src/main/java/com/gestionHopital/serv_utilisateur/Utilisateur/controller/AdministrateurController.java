@@ -51,23 +51,12 @@ public class AdministrateurController {
     private SalleService salleService;
 
 
-    @PostMapping("/activerMedecin")
-    public String activerMedecin(@RequestParam("id") Long id) {
-        medecinService.activerMedecin(id);
-        return "redirect:/Administrateur/Accueil";
-    }
-
-    @PostMapping("/activerInfirmier")
-    public String activerInfirmier(@RequestParam("id") Long id) {
-        infirmierService.activerInfirmier(id);
-        return "redirect:/Administrateur/Accueil";
-    }
 
     @GetMapping("/Accueil")
     public String accueilAdmin(Model model, Principal principal) {
         // Récupération des données
         Utilisateur admin = utilisateurService.rechercher_Utilisateur(principal.getName());
-        List<Medecin> medecins = medecinService.listerMedecins();
+        List<Medecin> medecins = medecinService.findAll();
         List<Infirmier> infirmiers = infirmierService.listerInfirmiers();
         List<Batiment> batiments = batimentService.findAll();
         List<ServiceF> services = serviceService.findAll();
@@ -99,7 +88,7 @@ public class AdministrateurController {
 
         // Sauvegarde de l'administrateur et attribution du rôle
         administrateurService.ajouterAdministrateur(administrateur);
-        utilisateurService.ajouter_UtilisateurRoles(administrateur, role);
+        utilisateurService.ajouter_UtilisateurRoles(administrateur);
 
         return "redirect:/Administrateur/Accueil";
     }
@@ -119,25 +108,6 @@ public class AdministrateurController {
         return "redirect:/Administrateur/Accueil"; // redirige vers la page souhaitée
     }
 
-    @PostMapping("/ajouterMedecin")
-    public String ajouterMedecin(Medecin medecin) {
-        String pasword = passwordEncoder.encode("Passer123");
-        medecin.setPassword(pasword); medecin.setDateCreation((new Date())); medecin.setActive(true);
-        Role role = utilisateurService.ajouter_Role(new Role("MEDECIN"));
-        utilisateurService.ajouter_Role(role);
-        medecinService.ajouterMedecin(medecin);
-        return "redirect:/Administrateur/Accueil";
-    }
-
-    @PostMapping("/modifierMedecin")
-    public String modifierMedecin(Medecin medecin) {
-        Medecin med_modif=medecinService.rechercher(medecin.getId());
-        med_modif.setNumeroProfessionnel(medecin.getNumeroProfessionnel());
-        med_modif.setNom(medecin.getNom()); med_modif.setPrenom(medecin.getPrenom());
-        med_modif.setSpecialite(medecin.getSpecialite());
-        medecinService.modifierMedecin(med_modif);
-        return "redirect:/Administrateur/Accueil";
-    }
 
     @PostMapping("/ajouterInfirmier")
     public String ajouterInfirmier(Infirmier infirmier) {

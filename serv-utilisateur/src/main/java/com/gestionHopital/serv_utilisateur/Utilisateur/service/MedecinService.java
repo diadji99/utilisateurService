@@ -2,60 +2,49 @@ package com.gestionHopital.serv_utilisateur.Utilisateur.service;
 
 import com.gestionHopital.serv_utilisateur.Utilisateur.modele.Medecin;
 import com.gestionHopital.serv_utilisateur.Utilisateur.repository.MedecinRepository;
-import com.gestionHopital.serv_utilisateur.exception.ResourceAlreadyExistException;
-import com.gestionHopital.serv_utilisateur.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-@Transactional
 public class MedecinService {
-
     @Autowired
     private MedecinRepository medecinRepository;
 
-    public void ajouterMedecin(Medecin medecin) {
-        Optional<Medecin> optionalMedecin = medecinRepository.findByNumeroProfessionnel(medecin.getNumeroProfessionnel());
-        if (optionalMedecin.isPresent())
-            throw new ResourceAlreadyExistException("Le numéro professionnel existe déjà" + medecin.getNumeroProfessionnel());
-        try {
-            medecinRepository.save(medecin);
-        } catch (Exception exception) {
-            throw new ResourceAlreadyExistException("Error lors de l'Ajout" + medecin.getNumeroProfessionnel());
-        }
+    public Medecin create(Medecin medecin){
 
+        return medecinRepository.save(medecin);
     }
 
-    public List<Medecin> listerMedecin() { return medecinRepository.findAll(); }
-
-    public Medecin rechercher(Long id) {
-        try {return medecinRepository.findById(id).get();
-        }catch (Exception exception) {
-            throw new ResourceNotFoundException("Medecin avec pour ID" + id + "n'existe pas");
+    public Medecin update(Medecin update){
+        Medecin existing = medecinRepository.findById(update.getId()).get();
+        if(existing != null){
+            return medecinRepository.save(update);
+        }
+        else {
+            return null;
         }
     }
 
-    public void modifierMedecin(Medecin medecin) {
-        try {
-            medecinRepository.save(medecin);
-        } catch (Exception exception) {
-            throw new ResourceNotFoundException("Erreur lors de la modificatiocation " + medecin.getId());
+    public Medecin activer(Medecin medecin){
+        if(medecin.isActive()){
+            medecin.setActive(false);
+        }else{
+            medecin.setActive(true);
         }
+        return medecinRepository.save(medecin);
     }
 
-    public List<Medecin> listerMedecins() {
+    public void delete(Medecin medecin){
+        medecinRepository.delete(medecin);
+    }
+
+    public List<Medecin> findAll(){
         return medecinRepository.findAll();
     }
 
-    public void activerMedecin(Long id) {
-        Medecin medecin = medecinRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Médecin non trouvé"));
-        medecin.setActive(!medecin.isActive());
-        medecinRepository.save(medecin);
+    public Medecin findById(Long id){
+        return medecinRepository.findById(id).get();
     }
-
 }

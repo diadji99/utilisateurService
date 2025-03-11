@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public abstract class Utilisateur {
     private Long id;
     @Column(unique = true)
     private String username;
+    private String sexe;
+    private String dateNaissance;
     @NotNull
     private String password;
     private String nom;
@@ -27,7 +30,7 @@ public abstract class Utilisateur {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreation;
     private boolean active;
-
+    private String numeroProfessionnel;
     @OneToMany(fetch = FetchType.EAGER)
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 }

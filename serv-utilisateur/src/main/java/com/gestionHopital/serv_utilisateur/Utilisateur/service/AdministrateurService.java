@@ -22,15 +22,7 @@ public class AdministrateurService {
     private UtilisateurRepository utilisateurRepository;
 
     public void ajouterAdministrateur(Administrateur administrateur) {
-        Optional<Administrateur> optionalEtudiant = administrateurRepository.findByNumeroProfessionnel(administrateur.getNumeroProfessionnel());
-        if (optionalEtudiant.isPresent())
-            throw new ResourceAlreadyExistException("Le numéro professionnel existe déjà" + administrateur.getNumeroProfessionnel());
-        try {
             administrateurRepository.save(administrateur);
-        } catch (Exception exception) {
-            throw new ResourceAlreadyExistException("Error lors de l'Ajout" + administrateur.getNumeroProfessionnel());
-        }
-
     }
 
     public List<Administrateur> listerAdministrateur() { return administrateurRepository.findAll(); }

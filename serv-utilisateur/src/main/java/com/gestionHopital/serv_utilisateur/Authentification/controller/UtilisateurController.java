@@ -69,7 +69,7 @@ public class UtilisateurController {
         return "profil";
     }
 
-    @PostMapping("/profil")
+    /*@PostMapping("/profil")
     public String updateProfil(
             @RequestParam Long id,
             @RequestParam String nom,
@@ -121,5 +121,5 @@ public class UtilisateurController {
         utilisateurService.updateUtilisateur(existingUser);
         redirectAttributes.addFlashAttribute("success", "Profil mis à jour avec succès");
         return "redirect:/profil";
-    }
+    }*/
 }
