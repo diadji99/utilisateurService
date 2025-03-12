@@ -24,14 +24,20 @@ public class ServiceService {
         }
     }
 
-    public ServiceF update(ServiceF existing, ServiceF update){
-        if(!existing.getNom().equals(update.getNom()) && !update.getNom().isEmpty()){
-            existing.setNom(update.getNom());
-        }
-        if(existing.getBatiment() != update.getBatiment() && update.getBatiment() != null){
-            existing.setBatiment(update.getBatiment());
-        }
-        return serviceRepository.save(existing);
+    public ServiceF update(ServiceF update){
+        return serviceRepository.save(update);
+    }
+
+    public void addPatient(ServiceF serviceF){
+        int patient = serviceF.getNombreDePatients() + 1;
+        serviceF.setNombreDePatients(patient);
+        serviceRepository.save(serviceF);
+    }
+
+    public  void moinPatient(ServiceF serviceF){
+        int patient = serviceF.getNombreDePatients() - 1;
+        serviceF.setNombreDePatients(patient);
+        serviceRepository.save(serviceF);
     }
 
     public  void delete(ServiceF serviceF){

@@ -18,7 +18,9 @@ public class ServiceF {
     private Long id;
     @Column(unique = true,nullable = false)
     private String nom;
-
+    private String chefDeService;
+    private int nombreDeMedecin = 0;
+    private int nombreDePatients = 0;
     @ManyToOne
     @JoinColumn(name = "batiment_id", nullable = false)
     private Batiment batiment;

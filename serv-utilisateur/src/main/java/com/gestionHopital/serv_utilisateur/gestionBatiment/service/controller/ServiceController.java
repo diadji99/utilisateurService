@@ -62,7 +62,13 @@ public class ServiceController {
             if (bat != null) {
                 update.setBatiment(bat);
             }
-            ServiceF updated = serviceService.update(existing, update);
+            if(!existing.getNom().equals(update.getNom()) && !update.getNom().isEmpty()){
+                existing.setNom(update.getNom());
+            }
+            if(existing.getBatiment() != update.getBatiment() && update.getBatiment() != null){
+                existing.setBatiment(update.getBatiment());
+            }
+            ServiceF updated = serviceService.update(existing);
             if (updated != null) {
                 redirectAttributes.addFlashAttribute("success", "Service mis à jour avec succès");
             } else {
