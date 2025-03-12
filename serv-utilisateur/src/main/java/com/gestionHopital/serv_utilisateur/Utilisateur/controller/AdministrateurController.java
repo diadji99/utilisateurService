@@ -17,6 +17,8 @@ import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.model.Salle;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.service.SalleService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.model.ServiceF;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.service.ServiceService;
+import com.gestionHopital.serv_utilisateur.patient.model.Patient;
+import com.gestionHopital.serv_utilisateur.patient.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,7 +52,8 @@ public class AdministrateurController {
     private LitService litService;
     @Autowired
     private SalleService salleService;
-
+    @Autowired
+    private PatientService patientService;
 
 
     @GetMapping("/Accueil")
@@ -62,6 +66,18 @@ public class AdministrateurController {
         List<ServiceF> services = serviceService.findAll();
         List<Lit> lits = litService.findAll();
         List<Salle> salles = salleService.findAll();
+        List<Patient> patients = patientService.findAll();
+        int deces = 0;
+        int operations = 0;
+        int testlabo = 0;
+        int gain = 0;
+        model.addAttribute("deces",deces);
+        model.addAttribute("operations",operations);
+        model.addAttribute("testLabo",testlabo);
+        model.addAttribute("gain",gain);
+        List<Infirmier> infirmier=new ArrayList<>();
+        model.addAttribute("infirmiers",infirmiers);
+        model.addAttribute("patients",patients);
         // Ajout des attributs au modèle
         model.addAttribute("nom", admin.getNom());
         model.addAttribute("prenom", admin.getPrenom().charAt(0));
