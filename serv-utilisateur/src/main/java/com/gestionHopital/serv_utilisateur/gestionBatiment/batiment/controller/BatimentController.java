@@ -11,11 +11,10 @@ import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.service.SalleSe
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.model.ServiceF;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -23,6 +22,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/Administrateur/batiments")
 public class BatimentController {
+
     @Autowired
     private BatimentService batimentService;
     @Autowired
@@ -34,74 +34,66 @@ public class BatimentController {
     @Autowired
     private SalleService salleService;
 
-    @RequestMapping("")
-    public ResponseEntity<?> getAll(Principal principal){
-        List<Batiment> batiments = batimentService.findAll();
-        return ResponseEntity.ok(batiments);
-    }
+    @GetMapping("/Accueil")
+    public String accueilBatiment(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login"; // Rediriger vers login si non connecté
+        }
 
-    @RequestMapping("/Accueil")
-    public String accueiBatiment(Model model, Principal principal){
         Utilisateur admin = utilisateurService.rechercher_Utilisateur(principal.getName());
         List<Batiment> batiments = batimentService.findAll();
         List<ServiceF> services = serviceService.findAll();
         List<Lit> lits = litService.findAll();
         List<Salle> salles = salleService.findAll();
-        // Ajout des attributs au modèle
+
+        // Ajouter les données au modèle
         model.addAttribute("nom", admin.getNom());
         model.addAttribute("prenom", admin.getPrenom().charAt(0));
-
-        model.addAttribute("batiments",batiments);
-        model.addAttribute("services",services);
-        model.addAttribute("lits",lits);
-        model.addAttribute("salles",salles);
+        model.addAttribute("batiments", batiments);
+        model.addAttribute("services", services);
+        model.addAttribute("lits", lits);
+        model.addAttribute("salles", salles);
 
         return "admin_Batiment";
     }
 
-    @RequestMapping("/{id}")
-    public ResponseEntity<?> getBatiment(@PathVariable Long id){
-        Batiment batiment = batimentService.findByid(id);
-        if(batiment == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Le batiment n'existe pas ou est introuvable");
+    @PostMapping("/ajouter")
+    public String ajouterBatiment(@ModelAttribute Batiment batiment, RedirectAttributes redirectAttributes) {
+        Batiment create = batimentService.create(batiment);
+        if (create != null) {
+            redirectAttributes.addFlashAttribute("succes", "Bâtiment créé avec succès !");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Erreur : Ce bâtiment existe déjà !");
         }
-        return ResponseEntity.ok(batiment);
-    }
-
-
-    @RequestMapping(value = "/ajouter", method = RequestMethod.POST)
-    public String ajouterBatiment(@ModelAttribute Batiment batiment) {
-        batimentService.create(batiment);
         return "redirect:/Administrateur/batiments/Accueil";
     }
 
-    @RequestMapping("/{id}/modifier")
-    public ResponseEntity<?> modifierBatiment(@PathVariable Long id,@RequestBody Batiment update){
+    @PostMapping("/{id}/modifier")
+    public String modifierBatiment(@PathVariable Long id, @ModelAttribute Batiment update, RedirectAttributes redirectAttributes) {
         Batiment existing = batimentService.findByid(id);
-        if(existing != null){
-            return ResponseEntity.ok(batimentService.update(existing,update));
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Le batiment n'existe pas");
+        if (existing != null) {
+            existing.setNom(update.getNom());
+            Batiment updated = batimentService.update(existing);
+            if (updated != null) {
+                redirectAttributes.addFlashAttribute("succes", "Mise à jour réussie !");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Erreur lors de la mise à jour.");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Bâtiment introuvable.");
         }
+        return "redirect:/Administrateur/batiments/Accueil";
     }
 
-    @RequestMapping("/{id}/supprimer")
-    public ResponseEntity<?> supprimerBatiment(@PathVariable Long id){
+    @PostMapping("/{id}/supprimer")
+    public String supprimerBatiment(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Batiment existing = batimentService.findByid(id);
-        if(existing != null){
+        if (existing != null) {
             batimentService.delete(existing);
-            return ResponseEntity.ok("batiment supprimer");
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("batiment n'existe pas");
+            redirectAttributes.addFlashAttribute("succes", "Bâtiment supprimé avec succès !");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Bâtiment introuvable.");
         }
+        return "redirect:/Administrateur/batiments/Accueil";
     }
-
-    @RequestMapping("/{id}/services")
-    public ResponseEntity<?> getServices(@PathVariable Long id){
-        Batiment batiment = batimentService.findByid(id);
-        if(batiment != null){
-            return ResponseEntity.ok(batiment.getServiceFS());
-        }return ResponseEntity.status(HttpStatus.NOT_FOUND).body("batiment inexistant");
-    }
-
 }

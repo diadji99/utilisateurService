@@ -20,11 +20,8 @@ public class BatimentService {
         return batimentRepository.save(batiment);
     }
 
-    public Batiment update(Batiment existing ,Batiment batiment){
-        if(!existing.getNom().equals(batiment.getNom()) && !batiment.getNom().isEmpty()){
-                existing.setNom(batiment.getNom());
-        }
-        return batimentRepository.save(existing);
+    public Batiment update(Batiment update){
+        return batimentRepository.save(update);
     }
 
     public void delete(Batiment existing){
