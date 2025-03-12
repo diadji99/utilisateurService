@@ -25,7 +25,7 @@ public class MedecinController {
     @Autowired
     private UtilisateurService utilisateurService;
 
-    @RequestMapping("/")
+    @RequestMapping("")
     public String getAllMedecin(Model model, Principal principal){
         Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());
         model.addAttribute("prenom", utilisateur.getPrenom().charAt(0));
@@ -38,18 +38,18 @@ public class MedecinController {
     public String ajouter(@ModelAttribute Medecin medecin, @RequestParam(required = false) Long idBureau, RedirectAttributes redirectAttributes) {
         if (idBureau == null) {
             redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un bureau.");
-            return "redirect:/Administrateur/medecins/";
+            return "redirect:/Administrateur/medecins";
         }
 
         Bureau bureau = bureauService.findById(idBureau);
         if (bureau == null) {
             redirectAttributes.addFlashAttribute("error", "Bureau inexistant.");
-            return "redirect:/Administrateur/medecins/";
+            return "redirect:/Administrateur/medecins";
         }
 
         if (bureau.getMedecin() != null) {
             redirectAttributes.addFlashAttribute("error", "Ce bureau est déjà attribué à un autre médecin.");
-            return "redirect:/Administrateur/medecins/";
+            return "redirect:/Administrateur/medecins";
         }
 
         medecin.setBureau(bureau);
@@ -61,7 +61,7 @@ public class MedecinController {
             redirectAttributes.addFlashAttribute("error", "Ce médecin existe déjà.");
         }
 
-        return "redirect:/Administrateur/medecins/";
+        return "redirect:/Administrateur/medecins";
     }
 
     @PostMapping("/{id}/activer")
@@ -77,7 +77,7 @@ public class MedecinController {
                 redirectAttributes.addFlashAttribute("error", "Échec de l'activation du médecin.");
             }
         }
-        return "redirect:/Administrateur/medecins/";
+        return "redirect:/Administrateur/medecins";
     }
 
     @PostMapping("/{id}/modifier")
@@ -85,23 +85,23 @@ public class MedecinController {
         Medecin existing = medecinService.findById(id);
         if (existing == null) {
             redirectAttributes.addFlashAttribute("error", "Médecin inexistant.");
-            return "redirect:/Administrateur/medecins/";
+            return "redirect:/Administrateur/medecins";
         }
 
         if (idBureau == null) {
             redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un bureau.");
-            return "redirect:/Administrateur/medecins/";
+            return "redirect:/Administrateur/medecins";
         }
 
         Bureau bureau = bureauService.findById(idBureau);
         if (bureau == null) {
             redirectAttributes.addFlashAttribute("error", "Bureau inexistant.");
-            return "redirect:/Administrateur/medecins/";
+            return "redirect:/Administrateur/medecins";
         }
 
         if (bureau.getMedecin() != null && !bureau.getMedecin().equals(existing)) {
             redirectAttributes.addFlashAttribute("error", "Ce bureau est déjà attribué à un autre médecin.");
-            return "redirect:/Administrateur/medecins/";
+            return "redirect:/Administrateur/medecins";
         }
 
         // Mise à jour des informations du médecin
@@ -117,7 +117,7 @@ public class MedecinController {
             redirectAttributes.addFlashAttribute("error", "Échec de la mise à jour.");
         }
 
-        return "redirect:/Administrateur/medecins/";
+        return "redirect:/Administrateur/medecins";
     }
 
     @PostMapping("/{id}/supprimer")
@@ -128,7 +128,7 @@ public class MedecinController {
             medecinService.delete(medecinService.findById(id));
             redirectAttributes.addFlashAttribute("success", "Médecin supprimé avec succès.");
         }
-        return "redirect:/Administrateur/medecins/";
+        return "redirect:/Administrateur/medecins";
     }
 }
 
