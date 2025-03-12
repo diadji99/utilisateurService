@@ -8,6 +8,7 @@ import com.gestionHopital.serv_utilisateur.gestionBatiment.bureau.service.Bureau
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +20,19 @@ import java.security.Principal;
 @RequestMapping("/Administrateur/medecins")
 public class MedecinController {
     @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
     private MedecinService medecinService;
     @Autowired
     private BureauService bureauService;
     @Autowired
     private UtilisateurService utilisateurService;
-
     @RequestMapping("")
     public String getAllMedecin(Model model, Principal principal){
         Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());
         model.addAttribute("prenom", utilisateur.getPrenom().charAt(0));
         model.addAttribute("nom", utilisateur.getNom());
+        model.addAttribute("bureaux",bureauService.findAll());
         model.addAttribute("medecins", medecinService.findAll());
         return "admin_Medecin";
     }
@@ -51,7 +54,7 @@ public class MedecinController {
             redirectAttributes.addFlashAttribute("error", "Ce bureau est déjà attribué à un autre médecin.");
             return "redirect:/Administrateur/medecins";
         }
-
+        medecin.setPassword(passwordEncoder.encode("Passer123"));
         medecin.setBureau(bureau);
         Medecin created = medecinService.create(medecin);
 
@@ -80,9 +83,9 @@ public class MedecinController {
         return "redirect:/Administrateur/medecins";
     }
 
-    @PostMapping("/{id}/modifier")
-    public String modifier(@PathVariable Long id, @RequestParam(required = false) Long idBureau, @ModelAttribute Medecin update, RedirectAttributes redirectAttributes) {
-        Medecin existing = medecinService.findById(id);
+    @PostMapping("/modifier")
+    public String modifier(@RequestParam(required = false) Long idBureau, @ModelAttribute Medecin update, RedirectAttributes redirectAttributes) {
+        Medecin existing = medecinService.findById(update.getId());
         if (existing == null) {
             redirectAttributes.addFlashAttribute("error", "Médecin inexistant.");
             return "redirect:/Administrateur/medecins";
@@ -108,8 +111,6 @@ public class MedecinController {
         existing.setBureau(bureau);
         existing.setNom(update.getNom());
         existing.setPrenom(update.getPrenom());
-        existing.setActive(update.isActive());
-
         Medecin updated = medecinService.update(existing);
         if (updated != null) {
             redirectAttributes.addFlashAttribute("success", "Médecin mis à jour avec succès.");
@@ -120,8 +121,8 @@ public class MedecinController {
         return "redirect:/Administrateur/medecins";
     }
 
-    @PostMapping("/{id}/supprimer")
-    public String supprimer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/supprimer")
+    public String supprimer(@RequestParam Long id, RedirectAttributes redirectAttributes) {
         if (medecinService.findById(id) == null) {
             redirectAttributes.addFlashAttribute("error", "Médecin inexistant.");
         } else {

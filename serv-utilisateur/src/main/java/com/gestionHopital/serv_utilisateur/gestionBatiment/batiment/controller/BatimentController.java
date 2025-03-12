@@ -68,9 +68,9 @@ public class BatimentController {
         return "redirect:/Administrateur/batiments/Accueil";
     }
 
-    @PostMapping("/{id}/modifier")
-    public String modifierBatiment(@PathVariable Long id, @ModelAttribute Batiment update, RedirectAttributes redirectAttributes) {
-        Batiment existing = batimentService.findByid(id);
+    @PostMapping("/modifier")
+    public String modifierBatiment( @ModelAttribute Batiment update, RedirectAttributes redirectAttributes) {
+        Batiment existing = batimentService.findByid(update.getId());
         if (existing != null) {
             existing.setNom(update.getNom());
             Batiment updated = batimentService.update(existing);
@@ -85,8 +85,8 @@ public class BatimentController {
         return "redirect:/Administrateur/batiments/Accueil";
     }
 
-    @PostMapping("/{id}/supprimer")
-    public String supprimerBatiment(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @RequestMapping("/supprimer")
+    public String supprimerBatiment(@RequestParam(name = "id", required = true) Long id, RedirectAttributes redirectAttributes) {
         Batiment existing = batimentService.findByid(id);
         if (existing != null) {
             batimentService.delete(existing);
@@ -96,4 +96,5 @@ public class BatimentController {
         }
         return "redirect:/Administrateur/batiments/Accueil";
     }
+
 }
