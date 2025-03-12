@@ -34,12 +34,8 @@ public class AdministrateurService {
         }
     }
 
-    public void modifierAdministrateur(Administrateur administrateur) {
-        try {
-            administrateurRepository.save(administrateur);
-        } catch (Exception exception) {
-            throw new ResourceNotFoundException("Erreur lors de la modificatiocation " + administrateur.getId());
-        }
+    public Administrateur modifierAdministrateur(Administrateur administrateur) {
+        return administrateurRepository.save(administrateur);
     }
 
     public void activer(Long id) {
@@ -47,6 +43,10 @@ public class AdministrateurService {
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         utilisateur.setActive(!utilisateur.isActive());
         utilisateurRepository.save(utilisateur);
+    }
+
+    public Administrateur findByUsername(String username){
+        return administrateurRepository.findByUsername(username);
     }
 
 }

@@ -247,7 +247,7 @@
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/admin}">
+            <a class="nav-link" th:href="@{/Administrateur/Acceuil}">
                 <i class="bi bi-grid"></i>
                 <span>Tableau de Bord</span>
             </a>
@@ -402,7 +402,7 @@
                 <div class="icon-box xl bg-success-subtle rounded-5 mb-2 no-shadow">
                     <i class="ri-money-dollar-circle-line fs-1 text-success"></i>
                 </div>
-                <h1 class="text-success" th:value="${gain}"></h1>
+                <h1 class="text-primary counter" th:data-value="${gain}"></h1>
                 <h6>Gains</h6>
                 <span class="badge bg-success">+20% ce mois</span>
             </div>

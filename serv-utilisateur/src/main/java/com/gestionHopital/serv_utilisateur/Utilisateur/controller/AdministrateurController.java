@@ -149,7 +149,33 @@ public class AdministrateurController {
     }
 
     @GetMapping("/profile")
-    public String adminProfil(Model model){
+    public String adminProfil(Model model,Principal principal){
+        Administrateur administrateur = administrateurService.findByUsername(principal.getName());
+        model.addAttribute("admin",administrateur);
         return "admin_profile";
     }
+    @PostMapping("/modifier")
+    public String modifier(Administrateur administrateur){
+        Administrateur existing = administrateurService.rechercherAdministrateur(administrateur.getId());
+        if(existing != null){
+            existing.setNom(administrateur.getNom());
+            existing.setPrenom(administrateur.getPrenom());
+            existing.setNumeroProfessionnel(administrateur.getNumeroProfessionnel());
+            existing.setDateNaissance(administrateur.getDateNaissance());
+            existing.setSexe(administrateur.getSexe());
+            existing.setTelephone(administrateur.getTelephone());
+            administrateurService.modifierAdministrateur(existing);
+        }
+        return "redirect:/Administrateur/profile";
+    }
+
+    @PostMapping("/modifierLogin")
+    public String modifierLogin(@ModelAttribute Administrateur administrateur) {
+        Administrateur existing = administrateurService.rechercherAdministrateur(administrateur.getId());
+        existing.setUsername(administrateur.getUsername());
+        existing.setPassword(passwordEncoder.encode(administrateur.getPassword()));
+        administrateurService.modifierAdministrateur(existing);
+        return "redirect:/login";
+    }
+
 }
