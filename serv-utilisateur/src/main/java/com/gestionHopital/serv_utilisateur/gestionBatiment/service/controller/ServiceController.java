@@ -38,8 +38,8 @@ public class ServiceController {
     }
 
     @PostMapping("/ajouter")
-    public String ajouterService(@RequestParam Long id, @ModelAttribute ServiceF service, RedirectAttributes redirectAttributes) {
-        Batiment batiment = batimentService.findByid(id);
+    public String ajouterService(@RequestParam Long idBatiment, @ModelAttribute ServiceF service, RedirectAttributes redirectAttributes) {
+        Batiment batiment = batimentService.findByid(idBatiment);
         if (batiment != null) {
             service.setBatiment(batiment);
             ServiceF created = serviceService.create(service);
