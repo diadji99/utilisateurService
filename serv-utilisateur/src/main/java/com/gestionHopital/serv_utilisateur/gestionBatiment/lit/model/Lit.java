@@ -5,14 +5,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"salle_id", "numero"})})
 @Entity
 @Data @AllArgsConstructor @NoArgsConstructor
 public class Lit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false,unique = true)
     private int numero;
     private String type; // Exemple: "Médicalisé", "Simple", "Double", "Enfant"
 

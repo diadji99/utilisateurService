@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -32,6 +33,7 @@ public class ConsultationController {
     private ServiceService serviceService;
     @Autowired
     private UtilisateurService utilisateurService;
+
     @GetMapping("")
     public String getAll(Principal principal, Model model){
         Utilisateur user = utilisateurService.rechercher_Utilisateur(principal.getName());
@@ -43,59 +45,70 @@ public class ConsultationController {
 
 
     @PostMapping("/ajouter")
-    public String ajouter(@RequestParam(required = true) Long idMedecin,@RequestParam(required = true) Long idPatient,double prix){
+    public String ajouter(@RequestParam(required = true) Long idMedecin, @RequestParam(required = true) Long idPatient, double prix, RedirectAttributes redirectAttributes) {
         Patient existingPatient = patientService.findById(idPatient);
         Medecin existingMedecin = medecinService.findById(idMedecin);
-        String reponse = "";
-        if(existingMedecin != null && existingMedecin != null){
+
+        if (existingMedecin != null && existingPatient != null) {
             ServiceF service = existingMedecin.getBureau().getServiceF();
-            serviceService.addPatient(service);
-            Consultation consultation = new Consultation();
-            consultation.setDateConsultation(LocalDate.now());
-            consultation.setMedecin(existingMedecin);
-            consultation.setPatient(existingPatient);
-            consultation.setPrix(prix);
-            Consultation create = consultationService.create(consultation);
-            if(create != null){
-                reponse = "consultation créée";
-            }else{
-                reponse = "echec lors de la creation de la consultation";
+            if (service != null) {
+                serviceService.addPatient(service);
+                Consultation consultation = new Consultation();
+                consultation.setDateConsultation(LocalDate.now());
+                consultation.setMedecin(existingMedecin);
+                consultation.setPatient(existingPatient);
+                consultation.setPrix(prix);
+                Consultation created = consultationService.create(consultation);
+
+                if (created != null) {
+                    redirectAttributes.addFlashAttribute("success", "Consultation créée avec succès");
+                } else {
+                    redirectAttributes.addFlashAttribute("error", "Échec lors de la création de la consultation");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Service non trouvé pour ce médecin");
             }
-        }else {
-            reponse = "medecin ou patient null";
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Médecin ou patient inexistant");
         }
+
         return "redirect:/Medecin/consultations";
     }
 
 
-    @PutMapping("/modifier")
-    public ResponseEntity<?> modifier(@RequestParam Long id,@RequestParam(required = true) Long idMedecin,@RequestParam(required = true) Long idPatient,@RequestBody Consultation update){
+    @PostMapping("/modifier")
+    public String modifier(@RequestParam Long id, @RequestParam(required = true) Long idMedecin, @RequestParam(required = true) Long idPatient, @RequestBody Consultation update, RedirectAttributes redirectAttributes) {
         Consultation existing = consultationService.findById(id);
-        if(existing != null){
-            Patient existingPatient = patientService.findById(idPatient);
+        if (existing != null) {
             Medecin existingMedecin = medecinService.findById(idMedecin);
-            if(existingMedecin != null && existingPatient != null){
-                if(existing.getMedecin() != update.getMedecin()){
+            Patient existingPatient = patientService.findById(idPatient);
+
+            if (existingMedecin != null && existingPatient != null) {
+                // Si le médecin a changé
+                if (!existing.getMedecin().getId().equals(update.getMedecin().getId())) {
                     serviceService.moinPatient(existing.getMedecin().getBureau().getServiceF());
                     serviceService.addPatient(update.getMedecin().getBureau().getServiceF());
                 }
-                existing.setPatient(existingPatient);existing.setMedecin(existingMedecin);
+                existing.setPatient(existingPatient);
+                existing.setMedecin(existingMedecin);
                 existing.setDateConsultation(LocalDate.now());
                 Consultation updated = consultationService.update(existing);
-                if(updated != null){
-                    return ResponseEntity.ok(updated);
-                }else{
-                    return ResponseEntity.status(HttpStatus.CONFLICT).body("erreur lors de la mise à jour de la consultation");
-                }
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Medecin ou patient inexistant");
-            }
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("consultation inexistante");
-        }
-    }
 
-    @PutMapping("/{id}/suivi")
+                if (updated != null) {
+                    redirectAttributes.addFlashAttribute("success", "Consultation mise à jour avec succès");
+                } else {
+                    redirectAttributes.addFlashAttribute("error", "Erreur lors de la mise à jour de la consultation");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Médecin ou patient non trouvé");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Consultation inexistante");
+        }
+
+        return "redirect:/Medecin/consultations";
+    }
+    /*@PutMapping("/{id}/suivi")
     public ResponseEntity<?> suivi(@PathVariable Long id){
         Consultation consultation = consultationService.suivi(id);
 
@@ -105,15 +118,22 @@ public class ConsultationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("consultation inexistante");
         }
     }
-
-    @DeleteMapping("/{id}/supprimer")
-    public ResponseEntity<?> delete(@PathVariable Long id){
+*/
+    @PostMapping("/supprimer")
+    public String delete(@RequestParam Long id, RedirectAttributes redirectAttributes) {
+        String reponse = "";
         Consultation consultation = consultationService.findById(id);
-        if(consultation != null){
+
+        if (consultation != null) {
             consultationService.delete(consultation);
-            return ResponseEntity.ok("consultation supprimée");
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("consultation inexistante");
+            // Message de succès
+            redirectAttributes.addFlashAttribute("success", "Consultation supprimée avec succès");
+        } else {
+            // Message d'erreur
+            redirectAttributes.addFlashAttribute("error", "Consultation inexistante");
         }
+
+        return "redirect:/Medecin/consultations";
     }
+
 }
