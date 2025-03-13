@@ -30,8 +30,6 @@ public class ServUtilisateurApplication {
 									  PasswordEncoder passwordEncoder) {
 		return args -> {
 			Role administrateur = utilisateurService.ajouter_Role(new Role("ADMINISTRATEUR"));
-			Role vacataire = utilisateurService.ajouter_Role(new Role("Vacataire"));
-			Role chefDepartement = utilisateurService.ajouter_Role(new Role("ChefDepartement"));
 			String password = passwordEncoder.encode("Passer123");
 			administrateur = roleRepository.save(administrateur);
 			Administrateur user_1 = new Administrateur();
