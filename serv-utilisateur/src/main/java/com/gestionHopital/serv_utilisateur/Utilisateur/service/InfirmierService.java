@@ -55,4 +55,7 @@ public class InfirmierService {
         infirmierRepository.save(infirmier);
     }
 
+    public void delete(Infirmier infirmier){
+        infirmierRepository.delete(infirmier);
+    }
 }
