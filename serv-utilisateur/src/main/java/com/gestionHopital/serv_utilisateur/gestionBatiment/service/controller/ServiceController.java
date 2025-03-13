@@ -2,6 +2,8 @@ package com.gestionHopital.serv_utilisateur.gestionBatiment.service.controller;
 
 import com.gestionHopital.serv_utilisateur.Authentification.modele.Utilisateur;
 import com.gestionHopital.serv_utilisateur.Authentification.service.UtilisateurService;
+import com.gestionHopital.serv_utilisateur.Utilisateur.modele.Medecin;
+import com.gestionHopital.serv_utilisateur.Utilisateur.service.MedecinService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.model.Batiment;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.service.BatimentService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.model.ServiceF;
@@ -26,19 +28,28 @@ public class ServiceController {
     private BatimentService batimentService;
     @Autowired
     private UtilisateurService utilisateurService;
+    @Autowired
+    private MedecinService medecinService;
     @GetMapping("")
     public String getServices(Model model, Principal principal) {
         Utilisateur user= utilisateurService.rechercher_Utilisateur(principal.getName());
         model.addAttribute("prenom",user.getPrenom().charAt(0));
         model.addAttribute("nom",user.getNom());
-
+        List<Batiment> batiments = batimentService.findAll();
+        List<Medecin> medecins = medecinService.findAll();
         List<ServiceF> serviceList = serviceService.findAll();
+
+        model.addAttribute("medecins", medecins);
         model.addAttribute("services", serviceList);
+        model.addAttribute("batiments", batiments);
         return "admin_Service"; // Vue Thymeleaf
     }
 
     @PostMapping("/ajouter")
-    public String ajouterService(@RequestParam Long idBatiment, @ModelAttribute ServiceF service, RedirectAttributes redirectAttributes) {
+    public String ajouterService(@RequestParam(name = "idBatiment", required = false) Long idBatiment,
+                                 @ModelAttribute ServiceF service,
+                                 RedirectAttributes redirectAttributes) {
+        System.out.println("ID du bâtiment reçu : " + idBatiment);
         Batiment batiment = batimentService.findByid(idBatiment);
         if (batiment != null) {
             service.setBatiment(batiment);
@@ -54,19 +65,16 @@ public class ServiceController {
         return "redirect:/Administrateur/services";
     }
 
-    @PostMapping("/{id}/modifier")
-    public String modifierService(@PathVariable Long id, @ModelAttribute ServiceF update, @RequestParam Long batiment, RedirectAttributes redirectAttributes) {
-        ServiceF existing = serviceService.findById(id);
+    @PostMapping("/modifier")
+    public String modifierService(@ModelAttribute ServiceF update, @RequestParam("idBatiment") Long idBatiment, RedirectAttributes redirectAttributes) {
+        ServiceF existing = serviceService.findById(update.getId());
         if (existing != null) {
-            Batiment bat = batimentService.findByid(batiment);
+            Batiment bat = batimentService.findByid(idBatiment);
             if (bat != null) {
-                update.setBatiment(bat);
+                existing.setBatiment(bat);
             }
-            if(!existing.getNom().equals(update.getNom()) && !update.getNom().isEmpty()){
+            if (!existing.getNom().equals(update.getNom()) && !update.getNom().isEmpty()) {
                 existing.setNom(update.getNom());
-            }
-            if(existing.getBatiment() != update.getBatiment() && update.getBatiment() != null){
-                existing.setBatiment(update.getBatiment());
             }
             ServiceF updated = serviceService.update(existing);
             if (updated != null) {
@@ -80,8 +88,9 @@ public class ServiceController {
         return "redirect:/Administrateur/services";
     }
 
-    @PostMapping("/{id}/supprimer")
-    public String supprimerService(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+    @PostMapping("/supprimer")
+    public String supprimerService(@RequestParam(name = "id", required = true) Long id, RedirectAttributes redirectAttributes) {
         ServiceF service = serviceService.findById(id);
         if (service != null) {
             serviceService.delete(service);
