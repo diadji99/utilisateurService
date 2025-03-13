@@ -310,11 +310,11 @@
                 <tr th:each="lit : ${lits}">
                     <td th:text="${lit.id}">1</td>
                     <td th:text="${lit.numero}">numero</td>
-                    <td th:if="${lit.salle != null and lit.salle.serviceF != null}"
+                    <td th:if="${lit.salle != null && lit.salle.serviceF != null}"
                         th:text="${lit.salle.serviceF.nom + ' salle N° ' + lit.salle.numero}">
                         salle
                     </td>
-                    <td th:unless="${lit.salle != null and lit.salle.serviceF != null}"
+                    <td th:unless="${lit.salle != null && lit.salle.serviceF != null}"
                         th:text="${'Non attribué'}">
                     </td>
                     <td th:text="${lit.etat}"></td>
@@ -348,7 +348,7 @@
                                                 <div class="col-md-6 mb-3">
                                                     <label for="editSalle" class="form-label"><i class="fas fa-clinic-medical text-primary"></i> Salle</label>
                                                     <select class="form-control" id="editSalle" name="salle">
-                                                        <option th:each="salle : ${salles}" th:value="${salle.id}" th:text="${salle.service.nom + ' salle N° ' + salle.numero}"></option>
+                                                        <option th:each="salle : ${salles}" th:value="${salle.id}" th:text="${salle.serviceF.nom + ' salle N° ' + salle.numero}"></option>
                                                     </select>
                                                 </div>
 
