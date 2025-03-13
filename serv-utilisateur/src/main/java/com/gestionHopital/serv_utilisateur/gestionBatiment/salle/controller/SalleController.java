@@ -2,6 +2,8 @@ package com.gestionHopital.serv_utilisateur.gestionBatiment.salle.controller;
 
 import com.gestionHopital.serv_utilisateur.Authentification.modele.Utilisateur;
 import com.gestionHopital.serv_utilisateur.Authentification.service.UtilisateurService;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.model.Batiment;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.service.BatimentService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.model.Salle;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.service.SalleService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.model.ServiceF;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/Administrateur/salles")
@@ -25,10 +28,15 @@ public class SalleController {
     private ServiceService serviceService;
     @Autowired
     private UtilisateurService utilisateurService;
+    @Autowired
+    private BatimentService batimentService;
 
     @GetMapping("")
     public String getAll(Model model, Principal principal) {
         Utilisateur user= utilisateurService.rechercher_Utilisateur(principal.getName());
+        List<ServiceF> serviceFS = serviceService.findAll();
+
+        model.addAttribute("serviceFS", serviceFS);
         model.addAttribute("prenom",user.getPrenom().charAt(0));
         model.addAttribute("nom",user.getNom());
         model.addAttribute("salles", salleService.findAll());
@@ -36,8 +44,8 @@ public class SalleController {
     }
 
     @PostMapping("/ajouter")
-    public String ajouter(@RequestParam Long id, @ModelAttribute Salle salle, RedirectAttributes redirectAttributes) {
-        ServiceF service = serviceService.findById(id);
+    public String ajouter(@RequestParam("service_id") Long serviceId, @ModelAttribute Salle salle, RedirectAttributes redirectAttributes) {
+        ServiceF service = serviceService.findById(serviceId);
         if (service != null) {
             salle.setServiceF(service);
             Salle created = salleService.create(salle);
@@ -52,15 +60,19 @@ public class SalleController {
         return "redirect:/Administrateur/salles";
     }
 
-    @PostMapping("/{id}/modifier")
-    public String modifier(@PathVariable Long id, @ModelAttribute Salle update, @RequestParam Long service, RedirectAttributes redirectAttributes) {
-        Salle existing = salleService.findById(id);
+
+    @PostMapping("/modifier")
+    public String modifier(@ModelAttribute Salle update,
+                           @RequestParam(name = "service_id", required = true) Long serviceId,
+                           RedirectAttributes redirectAttributes) {
+        Salle existing = salleService.findById(update.getId());
         if (existing != null) {
-            ServiceF serviceF = serviceService.findById(service);
+            ServiceF serviceF = serviceService.findById(serviceId);
+            existing.setNumero(update.getNumero());
             if (serviceF != null) {
-                update.setServiceF(serviceF);
+                existing.setServiceF(serviceF);
             }
-            Salle updated = salleService.update(existing, update);
+            Salle updated = salleService.update(existing);
             if (updated != null) {
                 redirectAttributes.addFlashAttribute("success", "Salle mise à jour avec succès");
             } else {
@@ -72,8 +84,8 @@ public class SalleController {
         return "redirect:/Administrateur/salles";
     }
 
-    @PostMapping("/{id}/supprimer")
-    public String supprimer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/supprimer")
+    public String supprimer(@RequestParam(name = "id", required = true) Long id, RedirectAttributes redirectAttributes) {
         Salle salle = salleService.findById(id);
         if (salle != null) {
             salleService.delete(salle);

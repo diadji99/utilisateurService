@@ -15,6 +15,7 @@ public class Salle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int numero;
+    private int nombreLits=0;
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private ServiceF serviceF;

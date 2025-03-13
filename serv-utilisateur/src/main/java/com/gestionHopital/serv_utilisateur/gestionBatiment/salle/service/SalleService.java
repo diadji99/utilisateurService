@@ -18,13 +18,7 @@ public class SalleService {
         return salleRepository.save(salle);
     }
 
-    public Salle update(Salle existing,Salle update){
-        if(existing.getNumero() != update.getNumero()){
-            existing.setNumero(update.getNumero());
-        }
-        if(existing.getServiceF() != update.getServiceF() && update.getServiceF() != null){
-            existing.setServiceF(update.getServiceF());
-        }
+    public Salle update(Salle existing){
         return salleRepository.save(existing);
     }
 

@@ -45,6 +45,7 @@ public class LitController {
             Salle salle = salleService.findById(idSalle);
             if (salle != null) {
                 lit.setSalle(salle);
+                litService.addLit(salle);
             }
         }
 
