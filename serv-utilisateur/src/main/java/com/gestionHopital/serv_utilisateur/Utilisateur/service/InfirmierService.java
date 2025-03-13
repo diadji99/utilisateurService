@@ -39,12 +39,8 @@ public class InfirmierService {
         }
     }
 
-    public void modifierInfirmier(Infirmier infirmier) {
-        try {
-            infirmierRepository.save(infirmier);
-        } catch (Exception exception) {
-            throw new ResourceNotFoundException("Erreur lors de la modificatiocation " + infirmier.getId());
-        }
+    public Infirmier modifierInfirmier(Infirmier infirmier) {
+        return infirmierRepository.save(infirmier);
     }
 
     // InfirmierService.java
