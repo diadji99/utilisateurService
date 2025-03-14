@@ -18,16 +18,8 @@ public class InfirmierService {
     @Autowired
     private InfirmierRepository infirmierRepository;
 
-    public void ajouterInfirmier(Infirmier infirmier) {
-        Optional<Infirmier> optionalInfirmier = infirmierRepository.findByNumeroProfessionnel(infirmier.getNumeroProfessionnel());
-        if (optionalInfirmier.isPresent())
-            throw new ResourceAlreadyExistException("Le numéro professionnel existe déjà" + infirmier.getNumeroProfessionnel());
-        try {
-            infirmierRepository.save(infirmier);
-        } catch (Exception exception) {
-            throw new ResourceAlreadyExistException("Error lors de l'Ajout" + infirmier.getNumeroProfessionnel());
-        }
-
+    public Infirmier ajouterInfirmier(Infirmier infirmier) {
+       return infirmierRepository.save(infirmier);
     }
 
     public List<Infirmier> listerInfirmier() { return infirmierRepository.findAll(); }
@@ -43,6 +35,9 @@ public class InfirmierService {
         return infirmierRepository.save(infirmier);
     }
 
+    public Infirmier findByNumeroProfessionel(String numeroProfessionel){
+        return infirmierRepository.findByNumeroProfessionnel(numeroProfessionel);
+    }
     // InfirmierService.java
     public List<Infirmier> listerInfirmiers() {
         return infirmierRepository.findAll();

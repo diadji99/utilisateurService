@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>admin</title>
+  <title>admine lit</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
-  <!-- Favicons -->
   <link th:href="@{/assets/img/favicon.png}" rel="icon">
   <link th:href="@{/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-  <!-- Vendor CSS Files -->
   <link th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
   <link th:href="@{/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
   <link th:href="@{/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
@@ -25,44 +23,31 @@
   <link th:href="@{/assets/vendor/quill/quill.bubble.css}" rel="stylesheet">
   <link th:href="@{/assets/vendor/remixicon/remixicon.css}" rel="stylesheet">
   <link th:href="@{/assets/vendor/simple-datatables/style.css}" rel="stylesheet">
+  <!-- Importation de Material Icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <!-- Remix Icons -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
   <link th:href="@{/assets/css/style.css}" rel="stylesheet">
-  <style>
-    .card {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-    .card.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .card:hover {
-      transform: scale(1.05);
-      transition: transform 0.3s ease-in-out;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    }
-    .card:hover {
-      animation: shake 0.3s ease-in-out;
-    }
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-3px); }
-      50% { transform: translateX(3px); }
-      75% { transform: translateX(-3px); }
-      100% { transform: translateX(0); }
-    }
-  </style>
 </head>
 
 <body>
-<!-- ======= Header ======= -->
+
 <header id="header" class="header fixed-top d-flex align-items-center">
   <div class="d-flex align-items-center justify-content-between">
     <a th:href="@{/Administrateur/Accueil}" class="logo d-flex align-items-center">
@@ -229,10 +214,10 @@
             </a>
           </li>
           <li>
-            <hr class="dropdown-divider">
+             <hr class="dropdown-divider">
           </li>
           <li>
-            <a class="dropdown-item d-flex align-items-center" th:href="@{/logout}">
+            <a class="dropdown-item d-flex align-items-center" th:href="@{/connexion}">
               <i class="bi bi-box-arrow-right"></i>
               <span>Déconnexion</span>
             </a>
@@ -243,7 +228,7 @@
   </nav><!-- End Icons Navigation -->
 </header><!-- End Header -->
 
-<!-- ======= Sidebar ======= -->
+
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
     <li class="nav-item">
@@ -261,7 +246,7 @@
     </li><!-- End F.A.Q Page Nav -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed" th:href="@{/admin_Infirmier}">
+      <a class="nav-link collapsed" th:href="@{/Administrateur/infirmiers}">
         <i class="bi-person-lines-fill fs-3"></i>
         <span>Gestion des Infirmiers</span>
       </a>
@@ -301,276 +286,173 @@
     </li>
   </ul>
 </aside><!-- End Sidebar************************************-->
-
-
+<!-- Main Content -->
 <main id="main" class="main">
-    <div class="row mb-3">
-       
-<div class="container-xl">
-	<div class="table-responsive">
-		<div class="table-wrapper">
-			<div class="table-title">
-				<div class="row">
-					<div class="col-sm-6">
-						<h3><i class="fas fa-user-nurse"></i><i class="fas fa-user-nurse"></i><i class="fas fa-user-nurse"></i></i> Gestion des Infirmiers</h3>
-					</div>
-					<div class="col-sm-6 d-flex justify-content-end">
-            <div class="btn-group" data-bs-toggle="buttons">
-                <label class="btn btn-info active">
-                    <input type="radio" name="status" value="all" checked="checked"> Tous
-                </label>
-                <label class="btn btn-success">
-                    <input type="radio" name="status" value="active"> Actif
-                </label>
-                <label class="btn btn-warning">
-                    <input type="radio" name="status" value="inactive"> Inactif
-                </label>
+  <div class="container-xl">
+    <div class="table-responsive">
+      <div class="table-title d-flex justify-content-between align-items-center mb-3">
+        <h3><i class="fa-solid fa-bed-pulse"></i> Gestion des Infirmiers</h3>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+          <i class="fas fa-plus-circle"></i> Ajouter un Infirmier
+        </button>
+      </div>
+      <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+          <th>Id</th>
+          <th>Numero Professionel</th>
+          <th>Prenom</th>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="infirmier : ${infirmiers}">
+          <td th:text="${infirmier.id}">1</td>
+          <td th:text="${infirmier.numeroProfessionnel}"></td>
+          <td th:text="${infirmier.prenom}">numero</td>
+          <td th:text="${infirmier.nom}">numero</td>
+          <td th:text="${infirmier.username}">numero</td>
+          <td>
+            <a th:attr="data-bs-target='#editServiceModal'+${infirmier.id}" class="edit" data-bs-toggle="modal">
+              <i class="fas fa-edit" data-bs-toggle="tooltip" title="Modifier"></i>
+            </a>
+
+            <a th:attr="data-bs-target='#deleteEmployeeModal'+${infirmier.id}" class="delete text-danger" data-bs-toggle="modal">
+              <i class="fas fa-trash-alt" data-bs-toggle="tooltip" title="Supprimer"></i>
+            </a>
+          </td>
+          <!-- Edit Modal -->
+          <div th:attr="id='editServiceModal'+${infirmier.id}" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content p-4">
+                <div class="modal-header bg-warning text-dark">
+                  <h5 class="modal-title"><i class="fas fa-edit"></i> Modifier un Lit Hospitalier</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form th:action="@{/Administrateur/infirmiers/modifier}" method="post">
+
+                    <div class="container-fluid">
+                      <div class="modal-body">
+                        <input type="hidden" id="editId" name="id" th:value="${infirmier.id}">
+                        <div class="form-group">
+                          <label for="numeroProfessionnel"><i class="fas fa-envelope"></i> Numéro professionnel</label>
+                          <input type="text" class="form-control" id="numeroProfessionnel" name="numeroProfessionel" th:value="${infirmier.numeroProfessionnel}" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="editPrenom"><i class="fas fa-user"></i> Prénom</label>
+                          <input type="text" class="form-control" id="editPrenom" name="prenom" th:value="${infirmier.prenom}" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="editNom"><i class="fas fa-user"></i> Nom</label>
+                          <input type="text" class="form-control" id="editNom" name="nom" th:value="${infirmier.nom}" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="editEmail"><i class="fas fa-envelope"></i> Email</label>
+                          <input type="email" class="form-control" id="editEmail" name="username" th:value="${infirmier.username}" required>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Enregistrer les modifications
+                      </button>
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Annuler
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
-        </div>
-        </div>
-			</div><table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                      
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Email</th>
-                        <th>Nbre de Patients en charge</th>
-                        <th>Service</th>
-                        <th>Poste</th>
-                        <th>Spécialité</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                       
-                        <td id="id1" name="id">1</td> <!-- ID -->
-                        <td id="nom" name="nom">Hardy</td> <!-- Nom -->
-                        <td id="prenom" name="prenom">Thomas</td> <!-- Prénom -->
-                        <td id="email" name="email">ici mail</td> <!-- Email -->
-                        <td id="nbre_patients" name="nbre_patients">5</td> <!-- Nombre de patients en charge -->
-                        <td id="service" name="service">Urgences</td> <!-- Service -->
-                        <td id="poste" name="poste">Infirmier</td> <!-- Poste -->
-                        <td id="specialite" name="specialite">Soins intensifs</td> <!-- Spécialité -->
-                        <td><span class="label label-success">Active</span></td> <!-- Status -->
-                        <td>
-                            <a href="#editEmployeeModal" class="edit" data-toggle="modal">
-                                <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
-                            </a>
-                            <a href="#deleteEmployeeModal" class="delete text-danger" data-toggle="modal">
-                                <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
-                            </a>
-                            
-                        </td>
-                    </tr>
+          </div>
 
-                    <tr>
-                        
-                        <td id="id1" name="id">1</td> <!-- ID -->
-                        <td id="nom" name="nom">Hardy</td> <!-- Nom -->
-                        <td id="prenom" name="prenom">Thomas</td> <!-- Prénom -->
-                        <td id="email" name="email">ici mail</td> <!-- Email -->
-                        <td id="nbre_patients" name="nbre_patients">5</td> <!-- Nombre de patients en charge -->
-                        <td id="service" name="service">Urgences</td> <!-- Service -->
-                        <td id="poste" name="poste">Infirmier</td> <!-- Poste -->
-                        <td id="specialite" name="specialite">Soins intensifs</td> <!-- Spécialité -->
-                        <td><span class="label label-success">Active</span></td> <!-- Status -->
-                        <td>
-                            <a href="#editEmployeeModal" class="edit" data-toggle="modal">
-                                <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
-                            </a>
-                            <a href="#deleteEmployeeModal" class="delete text-danger" data-toggle="modal">
-                                <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
-                            </a>
-                            
-                        </td>
-                    </tr>
+          <!-- Delete Modal -->
+          <div class="modal fade" th:attr="id='deleteEmployeeModal'+${infirmier.id}" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <form th:action="@{/Administrateur/infirmiers/supprimer}" method="post">
+                  <div class="modal-header bg-danger text-light">
+                    <h5 class="modal-title" id="deleteEmployeeModalLabel"><i class="fas fa-trash-alt"></i> Supprimer un infirmier </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <!-- mise à jour -->
+                  <input type="hidden" name="id" th:value="${infirmier.id}">
+                  <div class="modal-body">
+                    <p>Êtes-vous sûr de vouloir supprimer ce service hospitalier ? Cette action est irréversible.</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
 
-                </tbody>
-            </table>
-          
-	</div>        
-</div>
 
-<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
-  <i class="fas fa-plus-circle"></i> Ajouter un Infirmier
-</button>
-
-<!-- Modal structure for adding an infirmier -->
-<div id="addEmployeeModal" class="modal fade" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/submit-infirmier" method="POST">
-        <div class="modal-header bg-success text-white">
-          <h5 class="modal-title" id="addEmployeeModalLabel"><i class="fas fa-user-plus"></i> Ajouter un Infirmier</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="prenom"><i class="fas fa-user"></i> Prénom</label>
-            <input type="text" class="form-control" id="prenom" name="prenom" placeholder="Entrez le prénom" required>
-          </div>
-          <div class="form-group">
-            <label for="nom"><i class="fas fa-user"></i> Nom</label>
-            <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom" required>
-          </div>
-          <div class="form-group">
-            <label for="email"><i class="fas fa-envelope"></i> Email</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Entrez l'email" required>
-          </div>
-          <div class="form-group">
-            <label for="nbre_patients"><i class="fas fa-users"></i> Nombre de Patients en Charge</label>
-            <input type="number" class="form-control" id="nbre_patients" name="nbre_patients" placeholder="Entrez le nombre de patients" min="0" required>
-          </div>
-          <div class="form-group">
-            <label for="service"><i class="fas fa-hospital"></i> Service</label>
-            <select class="form-control" id="service" name="service" required>
-              <option value="" disabled selected>Choisir un service</option>
-              <option value="Urgences">Urgences</option>
-              <option value="Réanimation">Réanimation</option>
-              <option value="Pédiatrie">Pédiatrie</option>
-              <option value="Cardiologie">Cardiologie</option>
-              <option value="Chirurgie">Chirurgie</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="poste"><i class="fas fa-briefcase"></i> Poste</label>
-            <select class="form-control" id="poste" name="poste" required>
-              <option value="" disabled selected>Choisir un poste</option>
-              <option value="Infirmier">Infirmier</option>
-              <option value="Chef de service">Chef de service</option>
-              <option value="Professeur">Professeur</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="specialite"><i class="fas fa-stethoscope"></i> Spécialité</label>
-            <select class="form-control" id="specialite" name="specialite" required>
-              <option value="" disabled selected>Choisir une spécialité</option>
-              <option value="Cardiologie">Cardiologie</option>
-              <option value="Neurologie">Neurologie</option>
-              <option value="Pédiatrie">Pédiatrie</option>
-              <option value="Chirurgie">Chirurgie</option>
-              <option value="Dermatologie">Dermatologie</option>
-              <option value="Orthopédie">Orthopédie</option>
-              <option value="Médecine générale">Médecine générale</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Ajouter</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
-        </div>
-      </form>
+        </tr>
+        </tbody>
+      </table>
     </div>
+    <!-- Modals -->
   </div>
-</div>
+</main>
 
-<!-- Modal structure for editing an infirmier -->
-<div id="editEmployeeModal" class="modal fade" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form action="/update-infirmier" method="POST">
-        <div class="modal-header bg-warning text-dark">
-          <h5 class="modal-title" id="editEmployeeModalLabel"><i class="fas fa-pencil-alt"></i> Modifier Infirmier</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Champ caché pour stocker l'ID de l'infirmier -->
-          <input type="hidden" id="id" name="id" value="">
-        
-          <div class="form-group">
-            <label for="prenom"><i class="fas fa-user"></i> Prénom</label>
-            <input type="text" class="form-control" id="prenom" name="prenom" value="" required>
+<!-- Add Modal -->
+<div id="addEmployeeModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content p-4">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title"><i class="fas fa-hospital"></i> Ajouter un Infirmier</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form th:action="@{/Administrateur/infirmiers/ajouter}" method="post">
+          <div class="container-fluid">
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="editPrenom"><i class="fas fa-user"></i> Numéro professionel</label>
+                <input type="text" class="form-control" id="numeroProfessionnel" name="numeroProfessionnel" required>
+              </div>
+              <div class="form-group">
+                <label for="editPrenom"><i class="fas fa-user"></i> Prénom</label>
+                <input type="text" class="form-control" id="prenom" name="prenom" required>
+              </div>
+              <div class="form-group">
+                <label for="editNom"><i class="fas fa-user"></i> Nom</label>
+                <input type="text" class="form-control" id="nom" name="nom" required>
+              </div>
+              <div class="form-group">
+                <label for="editEmail"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" class="form-control" name="username"required>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="nom"><i class="fas fa-user"></i> Nom</label>
-            <input type="text" class="form-control" id="nom" name="nom" value="" required>
+          <div class="text-center">
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-save"></i> Enregistrer
+            </button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+              <i class="fas fa-times"></i> Annuler
+            </button>
           </div>
-          <div class="form-group">
-            <label for="email"><i class="fas fa-envelope"></i> Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="" required>
-          </div>
-          <div class="form-group">
-            <label for="nbre_patients"><i class="fas fa-users"></i> Nombre de Patients en Charge</label>
-            <input type="number" class="form-control" id="nbre_patients" name="nbre_patients" value="" min="0" required>
-          </div>
-          <div class="form-group">
-            <label for="service"><i class="fas fa-hospital"></i> Service</label>
-            <select class="form-control" id="service" name="service" required>
-              <option value="Urgences">Urgences</option>
-              <option value="Réanimation">Réanimation</option>
-              <option value="Pédiatrie">Pédiatrie</option>
-              <option value="Cardiologie">Cardiologie</option>
-              <option value="Chirurgie">Chirurgie</option>
-              <option value="Médecine générale">Médecine générale</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="poste"><i class="fas fa-briefcase"></i> Poste</label>
-            <select class="form-control" id="poste" name="poste" required>
-              <option value="Infirmier" selected>Infirmier</option>
-              <option value="Chef Infirmier">Chef Infirmier</option>
-              <option value="Superviseur">Superviseur</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-warning"><i class="fas fa-pencil-alt"></i> Mettre à jour</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>
 
 
 
-
-
-<!-- Delete Modal HTML -->
-
-
-<!-- Modal structure for deleting an infirmier -->
-<div id="deleteEmployeeModal" class="modal fade" tabindex="-1" aria-labelledby="deleteEmployeeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/delete-infirmier" method="POST">
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title" id="deleteEmployeeModalLabel"><i class="fas fa-trash-alt"></i> Supprimer un Infirmier</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p><i class="fas fa-exclamation-triangle"></i> Êtes-vous sûr de vouloir supprimer cet infirmier ? Cette action est irréversible.</p>
-          <!-- Champ caché pour stocker l'ID de l'infirmier -->
-          <input type="hidden" id="id" name="id" value="">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
-          <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-    
-   
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/chart.js/chart.umd.js"></script>
-  <script src="assets/vendor/echarts/echarts.min.js"></script>
-  <script src="assets/vendor/quill/quill.js"></script>
-  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-
-  <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
-
+<!-- Bootstrap 5 JS (with Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS -->
+<script>
+  // JavaScript for modals (unchanged)
+</script>
 </body>
-
 </html>

@@ -32,11 +32,30 @@ public class InfirmierController {
     }
 
     @PostMapping("/ajouter")
-    public String ajouter(Infirmier infirmier){
-        infirmier.setPassword(passwordEncoder.encode(infirmier.getPassword()));
-        infirmierService.ajouterInfirmier(infirmier);
-        return "redirect:/Administrateur/infirmiers";
+    public String ajouter(Infirmier infirmier, RedirectAttributes redirectAttributes) {
+        Infirmier existing = infirmierService.findByNumeroProfessionel(infirmier.getNumeroProfessionnel());
+
+        if (existing != null) {
+            // L'infirmier avec ce numéro professionnel existe déjà
+            redirectAttributes.addFlashAttribute("error", "❌ Un infirmier avec ce même identifiant existe déjà.");
+            return "redirect:/Administrateur/infirmiers";
+        } else {
+            // L'infirmier n'existe pas, on peut le créer
+            infirmier.setPassword(passwordEncoder.encode("Passer123"));
+            Infirmier created = infirmierService.ajouterInfirmier(infirmier);
+
+            if (created != null) {
+                // Succès de l'ajout
+                redirectAttributes.addFlashAttribute("succes", "✅ Infirmier créé avec succès !");
+            } else {
+                // Erreur lors de la création
+                redirectAttributes.addFlashAttribute("error", "⚠️ Échec lors de la création de l'infirmier.");
+            }
+
+            return "redirect:/Administrateur/infirmiers";
+        }
     }
+
     @PostMapping("/modifier")
     public String modifier(@ModelAttribute Infirmier update, RedirectAttributes redirectAttributes) {
         Infirmier existing = infirmierService.rechercher(update.getId());
@@ -50,10 +69,7 @@ public class InfirmierController {
         existing.setNom(update.getNom());
         existing.setNumeroProfessionnel(update.getNumeroProfessionnel());
         existing.setUsername(update.getUsername());
-        existing.setPassword(passwordEncoder.encode(update.getPassword()));
-
         Infirmier updated = infirmierService.modifierInfirmier(existing);
-
         if (updated != null) {
             redirectAttributes.addFlashAttribute("succes", "✅ Infirmier mis à jour avec succès !");
         } else {
