@@ -1,5 +1,6 @@
 package com.gestionHopital.serv_utilisateur.Utilisateur.controller;
 
+import com.gestionHopital.serv_utilisateur.Authentification.modele.Role;
 import com.gestionHopital.serv_utilisateur.Authentification.modele.Utilisateur;
 import com.gestionHopital.serv_utilisateur.Authentification.service.UtilisateurService;
 import com.gestionHopital.serv_utilisateur.Utilisateur.modele.Infirmier;
@@ -42,6 +43,7 @@ public class InfirmierController {
         } else {
             // L'infirmier n'existe pas, on peut le créer
             infirmier.setPassword(passwordEncoder.encode("Passer123"));
+            infirmier.getRoles().add(utilisateurService.ajouter_Role(new Role("INFIRMIER")));
             Infirmier created = infirmierService.ajouterInfirmier(infirmier);
 
             if (created != null) {

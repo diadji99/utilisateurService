@@ -1,4 +1,5 @@
 package com.gestionHopital.serv_utilisateur.Utilisateur.controller;
+import com.gestionHopital.serv_utilisateur.Authentification.modele.Role;
 import com.gestionHopital.serv_utilisateur.Authentification.modele.Utilisateur;
 import com.gestionHopital.serv_utilisateur.Authentification.service.UtilisateurService;
 import com.gestionHopital.serv_utilisateur.Utilisateur.modele.Medecin;
@@ -37,8 +38,8 @@ public class MedecinController {
         return "admin_Medecin";
     }
 
-    @PostMapping("/ajouter")
-    public String ajouter(@ModelAttribute Medecin medecin, @RequestParam(required = false) Long idBureau, RedirectAttributes redirectAttributes) {
+    @RequestMapping("/ajouter")
+    public String ajouter(@ModelAttribute Medecin medecin, @RequestParam(name = "idBureau",required = true) Long idBureau, RedirectAttributes redirectAttributes) {
         if (idBureau == null) {
             redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un bureau.");
             return "redirect:/Administrateur/medecins";
@@ -56,6 +57,7 @@ public class MedecinController {
         }
         medecin.setPassword(passwordEncoder.encode("Passer123"));
         medecin.setBureau(bureau);
+        medecin.getRoles().add(utilisateurService.ajouter_Role(new Role("MEDECIN")));
         Medecin created = medecinService.create(medecin);
 
         if (created != null) {

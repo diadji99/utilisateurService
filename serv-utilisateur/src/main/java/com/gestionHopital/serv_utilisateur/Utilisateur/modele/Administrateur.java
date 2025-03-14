@@ -8,12 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 public class Administrateur extends Utilisateur {
-    @Column(unique = true)
-    private String numeroProfessionnel;
+
 }

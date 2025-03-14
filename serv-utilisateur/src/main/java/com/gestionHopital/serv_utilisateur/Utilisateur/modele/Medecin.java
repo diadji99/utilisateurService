@@ -23,7 +23,6 @@ public class Medecin extends Utilisateur {
 
     private String specialite;
     private String grade;
-
     @OneToOne
     private Bureau bureau;
     @OneToMany(mappedBy = "medecin",orphanRemoval = false)

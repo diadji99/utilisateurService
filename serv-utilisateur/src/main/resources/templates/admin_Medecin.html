@@ -320,7 +320,8 @@
 				<thead>
 					<tr>
 						<th>id</th>
-						<th>Nom</th>
+						<th>Numéro professionel</th>
+                        <th>Nom</th>
 						<th>Prénom</th>
 						<th>Email</th>
 						<th>Bureau</th>
@@ -330,34 +331,40 @@
                 <tbody>
                 <tr th:each="medecin : ${medecins}">
                     <td th:text="${medecin.id}">1</td> <!-- id -->
+                    <td th:text="${medecin.numeroProfessionnel}"></td>
                     <td th:text="${medecin.prenom}">Thomas</td> <!-- Prénom -->
                     <td th:text="${medecin.nom}">Hardy</td> <!-- Nom -->
                     <td th:text="${medecin.username}">ici mail</td> <!-- Email -->
-                    <td th:text="${medecin.sexe}">Homme</td> <!-- Sexe -->
-                    <td th:text="${medecin.bureau.numero}">103B</td> <!-- Bureau -->
-                    <td>
+                    <td th:text="${medecin.bureau.serviceF.nom + ' bureau N°' + medecin.bureau.numero}">103B</td> <!-- Bureau -->
+                   <!-- <td>
                         <span th:if="${medecin.active}" class="label label-success">Active</span>
                         <span th:unless="${medecin.active}" class="label label-danger">Desactive</span>
-                    </td>
+                    </td>-->
                     <td>
-                        <a th:href="'#editEmployeeModal' + ${medecin.id}" class="edit" data-toggle="modal">
-                            <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+                        <a th:attr="data-bs-target='#editServiceModal'+${medecin.id}" class="edit" data-bs-toggle="modal">
+                            <i class="fas fa-edit" data-bs-toggle="tooltip" title="Modifier"></i>
                         </a>
-                        <a href="#deleteEmployeeModal" class="delete text-danger" data-toggle="modal">
-                            <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
+
+                        <a th:attr="data-bs-target='#deleteEmployeeModal'+${medecin.id}" class="delete text-danger" data-bs-toggle="modal">
+                            <i class="fas fa-trash-alt" data-bs-toggle="tooltip" title="Supprimer"></i>
                         </a>
                     </td>
                     <!-- Modal structure for modifying a doctor -->
-                    <div  th:id="'editEmployeeModal' + ${medecin.id}" class="modal fade" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
+                    <div th:attr="id='editServiceModal'+${medecin.id}" class="modal fade" tabindex="-1" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <form action="/Administrateur/medecin/modifier" method="POST">
+                                <form action="@{/Administrateur/medecins/modifier}" method="POST">
                                     <div class="modal-header bg-warning text-white">
                                         <h5 class="modal-title" id="editEmployeeModalLabel"><i class="fas fa-user-edit"></i> Modifier Médecin</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <input type="hidden" id="editId" name="id" th:value="${medecin.id}">
+                                        <div class="form-group">
+                                            <label for="numeroProfessionnel"><i class="fas fa-user"></i> Numéro Professionel</label>
+                                            <input type="text" class="form-control" id="numeroProfessionnel" name="numeroProfessionnel" th:value="${medecin.numeroProfessionnel}" required>
+                                        </div>
+
                                         <div class="form-group">
                                             <label for="editPrenom"><i class="fas fa-user"></i> Prénom</label>
                                             <input type="text" class="form-control" id="editPrenom" name="prenom" th:value="${medecin.prenom}" required>
@@ -374,7 +381,7 @@
                                             <label for="editBureau"><i class="fas fa-building"></i> Bureau</label>
                                             <select class="form-control" id="editBureau" name="idBureau" required>
                                                 <option value="" disabled>Choisir un bureau</option>
-                                                <option th:each="bureau : ${bureaux}" th:value="${bureau.id}" th:text="${bureau.service.nom + ' bureau N°' + bureau.numero}" th:selected="${bureau.id == medecin.bureau.id}"></option>
+                                                <option th:each="bureau : ${bureaux}" th:value="${bureau.id}" th:text="${bureau.serviceF.nom + ' bureau N°' + bureau.numero}" th:selected="${bureau.id == medecin.bureau.id}"></option>
                                             </select>
                                         </div>
                                     </div>
@@ -386,6 +393,30 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Delete Modal -->
+                    <div class="modal fade" th:attr="id='deleteEmployeeModal'+${medecin.id}" tabindex="-1" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form th:action="@{/Administrateur/medecins/supprimer}" method="post">
+                                    <div class="modal-header bg-danger text-light">
+                                        <h5 class="modal-title" id="deleteEmployeeModalLabel"><i class="fas fa-trash-alt"></i> Supprimer un Medecin</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <!-- mise à jour -->
+                                    <input type="hidden" name="id" th:value="${medecin.id}">
+                                    <div class="modal-body">
+                                        <p>Êtes-vous sûr de vouloir supprimer ce service hospitalier ? Cette action est irréversible.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
                 </tr>
                 </tbody>
         </div>
@@ -398,72 +429,50 @@
 
 <!-- Modal structure for adding a doctor -->
 <div id="addEmployeeModal" class="modal fade" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="/Administrateur/medecin/ajouter" method="POST">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="addEmployeeModalLabel"><i class="fas fa-user-plus"></i> Ajouter Médecin</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="prenom"><i class="fas fa-user"></i> Prénom</label>
-                        <input type="text" class="form-control" id="prenom" name="prenom" placeholder="Entrez le prénom" required>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/Administrateur/medecins/ajouter" method="POST">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="addEmployeeModalLabel"><i class="fas fa-user-plus"></i> Ajouter Médecin</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="form-group">
-                        <label for="nom"><i class="fas fa-user"></i> Nom</label>
-                        <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" class="form-control" id="email" name="username" placeholder="Entrez l'email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bureau"><i class="fas fa-building"></i> Bureau</label>
-                        <select class="form-control" id="bureau" name="idBureau" required>
-                            <option value="" disabled selected>Choisir un bureau</option>
-                            <option th:each="bureau : ${bureaux}" th:value="${bureau.id}" th:text="${bureau.service.nom+' bureau N°'+ bureau.numero}">101A</option>
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label for="numeroProfessionnel"><i class="fas fa-user"></i> Numéro Professionnel</label>
+                            <input type="text" class="form-control" id="numeroProfessionnel" name="numeroProfessionnel" placeholder="Entrez le numéro professionnel" required autocomplete="off">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="prenom"><i class="fas fa-user"></i> Prénom</label>
+                            <input type="text" class="form-control" id="prenom" name="prenom" placeholder="Entrez le prénom" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="nom"><i class="fas fa-user"></i> Nom</label>
+                            <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" class="form-control" id="email" name="username" placeholder="Entrez l'email" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="bureau"><i class="fas fa-building"></i> Bureau</label>
+                            <select class="form-control" id="bureau" name="idBureau" required>
+                                <option value="" disabled selected>Sélectionnez un bureau</option>
+                                <option th:each="bureau : ${bureaux}" th:value="${bureau.id}" th:text="${bureau.serviceF.nom+' bureau N°'+ bureau.numero}">101A</option>
                             </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Ajouter Médecin</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
-                </div>
-            </form>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Ajouter Médecin</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-
-
-
-<!-- Delete Modal HTML --><!-- Modal structure for deleting doctor details -->
-<div id="deleteEmployeeModal" class="modal fade" tabindex="-1" aria-labelledby="deleteEmployeeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <form action="/delete-medecin" method="POST">
-              <div class="modal-header bg-danger text-white">
-                  <h5 class="modal-title" id="deleteEmployeeModalLabel"><i class="fas fa-trash-alt"></i> Supprimer Médecin</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <!-- Message de confirmation -->
-                  <div class="alert alert-warning" role="alert">
-                      <i class="fas fa-exclamation-triangle"></i> Êtes-vous sûr de vouloir supprimer ce médecin ? Cette action est irréversible.
-                  </div>
-                  <!-- Champ caché pour l'ID du médecin à supprimer -->
-                  <input type="hidden" id="medecinId" name="medecinId" value="">
-              </div>
-              <div class="modal-footer">
-                  <button type="submit" class="btn btn-danger"><i class="fas fa-check"></i> Confirmer la suppression</button>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
-              </div>
-          </form>
-      </div>
-  </div>
-</div>
 
 </div>
-    </div>
+
 </main>
 
    

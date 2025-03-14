@@ -26,6 +26,8 @@ public abstract class Utilisateur {
     private String sexe;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateNaissance;
+    @Column(unique = true)
+    private String numeroProfessionnel;
     @NotNull
     private String password;
     private String nom;

@@ -14,7 +14,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Infirmier extends Utilisateur {
-    @Column(unique = true)
-    private String numeroProfessionnel;
     private String specialite;
 }
