@@ -27,7 +27,7 @@ public class Hospitalisation {
     @JoinColumn(name = "patient_id", nullable = true)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Patient patient;
-
+    private double prix=0;
     @ManyToOne
     @JoinColumn(name = "lit_id", nullable = false)
     private Lit lit;

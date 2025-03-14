@@ -9,6 +9,8 @@ import com.gestionHopital.serv_utilisateur.Utilisateur.modele.Infirmier;
 import com.gestionHopital.serv_utilisateur.Utilisateur.service.AdministrateurService;
 import com.gestionHopital.serv_utilisateur.Utilisateur.service.InfirmierService;
 import com.gestionHopital.serv_utilisateur.Utilisateur.service.MedecinService;
+import com.gestionHopital.serv_utilisateur.consultation.model.Consultation;
+import com.gestionHopital.serv_utilisateur.consultation.service.ConsultationService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.model.Batiment;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.batiment.service.BatimentService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.lit.model.Lit;
@@ -17,6 +19,8 @@ import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.model.Salle;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.service.SalleService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.model.ServiceF;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.service.service.ServiceService;
+import com.gestionHopital.serv_utilisateur.hospitalisation.model.Hospitalisation;
+import com.gestionHopital.serv_utilisateur.hospitalisation.service.HospitalisationService;
 import com.gestionHopital.serv_utilisateur.patient.model.Patient;
 import com.gestionHopital.serv_utilisateur.patient.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +58,10 @@ public class AdministrateurController {
     private SalleService salleService;
     @Autowired
     private PatientService patientService;
-
+    @Autowired
+    private ConsultationService consultationService;
+    @Autowired
+    private HospitalisationService hospitalisationService;
 
     @GetMapping("/Accueil")
     public String accueilAdmin(Model model, Principal principal) {
@@ -67,14 +74,31 @@ public class AdministrateurController {
         List<Lit> lits = litService.findAll();
         List<Salle> salles = salleService.findAll();
         List<Patient> patients = patientService.findAll();
-        int deces = 0;
-        int operations = 0;
-        int testlabo = 0;
-        int gain = 0;
-        model.addAttribute("deces",deces);
-        model.addAttribute("operations",operations);
-        model.addAttribute("testLabo",testlabo);
-        model.addAttribute("gain",gain);
+        List<Consultation> consultations = consultationService.findAll();
+        List<Hospitalisation> hospitalisations = hospitalisationService.findAll();
+        double montantTotal = 0;
+        if(consultations != null){
+            for(Consultation c : consultations){
+                montantTotal += c.getPrix();
+            }
+        }
+        if(hospitalisations != null){
+            for(Hospitalisation h : hospitalisations){
+                montantTotal += h.getPrix();
+            }
+        }
+
+
+        int litOccupes = 0;
+        if(lits != null){
+            for(Lit l : lits){
+                if(l.getEtat().equals("OCCUPE")){
+                    litOccupes += 1;
+                }
+            }
+        }
+        model.addAttribute("litOccupes",litOccupes);
+        model.addAttribute("montantTotal",montantTotal);
         List<Infirmier> infirmier=new ArrayList<>();
         model.addAttribute("infirmiers",infirmiers);
         model.addAttribute("patients",patients);

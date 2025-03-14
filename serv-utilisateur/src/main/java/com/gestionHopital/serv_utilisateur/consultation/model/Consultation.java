@@ -17,7 +17,7 @@ public class Consultation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private double prix;
+    private double prix=0;
     @ManyToOne
     @JoinColumn(name = "medecin_id")
     private Medecin medecin;

@@ -30,7 +30,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Remix Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- Template Main CSS File -->
     <link th:href="@{/assets/css/style.css}" rel="stylesheet">
     <style>
@@ -360,30 +360,29 @@
     </div>
 
     <div class="d-flex justify-content-between flex-wrap mt-3">
-        <!-- Opérations -->
+        <!-- Bâtiment -->
         <div class="card mb-3 flex-fill mx-2">
             <div class="card-body text-center">
                 <div class="icon-box xl bg-danger-subtle rounded-5 mb-2 no-shadow">
-                    <i class="ri-surgical-mask-line fs-1 text-danger"></i>
+                    <i class="ri-building-2-line fs-1 text-primary"></i> <!-- Icône de bâtiment -->
                 </div>
-                <h1 class="text-primary counter" th:data-value="${operations}"></h1>
-                <h6>Opérations</h6>
-                <span class="badge bg-danger">-15% ce mois</span>
+                <h1 class="text-primary counter" th:data-value="${#lists.size(batiments)}"></h1> <!-- Nombre de bâtiments -->
+                <h6>Bâtiments</h6> <!-- Titre -->
+                <span class="badge bg-primary">5 bâtiments ajoutés ce mois-ci</span> <!-- Nouveau texte plus cohérent -->
             </div>
         </div>
 
-        <!-- Décès -->
         <div class="card mb-3 flex-fill mx-2">
             <div class="card-body text-center">
-                <div class="icon-box xl bg-dark-subtle rounded-5 mb-2 no-shadow">
-                    <i class="ri-heart-pulse-line fs-1 text-dark"></i>
+                <div  class="icon-box xl bg-success-subtle rounded-5 mb-2 no-shadow" style="padding:10px;">
+                    <!-- Icône de lit avec Font Awesome -->
+                    <i class="fas fa-bed fs-1 text-primary"></i>
                 </div>
-                <h1 class="text-primary counter" th:data-value="${deces}"></h1>
-                <h6>Décès</h6>
-                <span class="badge bg-dark">-1% ce mois</span>
+                <h1 class="text-primary counter" th:data-value="${#lists.size(lits)}"></h1>
+                <h6>Lits</h6>
+                <span class="badge bg-dark" th:text="'Total des lits occupés : ' + ${litOccupes}"></span>
             </div>
         </div>
-
         <!-- Tests en Laboratoire -->
         <div class="card mb-3 flex-fill mx-2">
             <div class="card-body text-center">
@@ -402,7 +401,7 @@
                 <div class="icon-box xl bg-success-subtle rounded-5 mb-2 no-shadow">
                     <i class="ri-money-dollar-circle-line fs-1 text-success"></i>
                 </div>
-                <h1 class="text-primary counter" th:data-value="${gain}"></h1>
+                <h1 class="text-primary counter" th:data-value="${montantTotal}"></h1>
                 <h6>Gains</h6>
                 <span class="badge bg-success">+20% ce mois</span>
             </div>
