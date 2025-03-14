@@ -2,6 +2,7 @@ package com.gestionHopital.serv_utilisateur.gestionBatiment.lit.controller;
 
 import com.gestionHopital.serv_utilisateur.Authentification.modele.Utilisateur;
 import com.gestionHopital.serv_utilisateur.Authentification.service.UtilisateurService;
+import com.gestionHopital.serv_utilisateur.gestionBatiment.lit.model.EtatLit;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.lit.model.Lit;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.lit.service.LitService;
 import com.gestionHopital.serv_utilisateur.gestionBatiment.salle.model.Salle;
@@ -48,7 +49,7 @@ public class LitController {
                 litService.addLit(salle);
             }
         }
-
+        lit.setEtat(EtatLit.DISPONIBLE);
         Lit created = litService.create(lit);
         if (created != null) {
             redirectAttributes.addFlashAttribute("success", "Lit ajouté avec succès");
