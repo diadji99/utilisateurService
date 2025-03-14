@@ -316,143 +316,165 @@
             </div>
         </div>
         </div>
+            <div class="d-flex justify-content-end mb-3">
+              <!-- Bouton pour ouvrir le modal -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                <i class="fas fa-plus-circle"></i> Ajouter un bureau
+              </button>
 			</div>
           <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                         <th>ID</th>
-                        
-                        <th>Batiment</th>
-                        <th>Médecin</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Numéro</th>
+              <th>Service</th>
+              <th>Médecin</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Boucle pour afficher chaque bureau -->
+            <tr th:each="bureau : ${bureaux}">
+              <td th:text="${bureau.id}"></td> <!-- ID -->
 
-                        <td id="id1" name="id">1</td> <!-- ID -->
-                        <td id="nom" name="nom">Hardy</td> <!-- Nom -->
-                        <td id="prenom" name="prenom">Thomas</td>
-                        <td><span class="label label-success">Occupé</span></td> <!-- Status -->
-                        <td>
-                            <a href="#editEmployeeModal" class="edit" data-toggle="modal">
-                                <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
-                            </a>
-                            <a href="#deleteEmployeeModal" class="delete text-danger" data-toggle="modal">
-                                <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
-                            </a>
+              <td th:text="${bureau.numero}"></td>
 
-                        </td>
-                    </tr>
+              <td th:text="${bureau.serviceF.nom}"></td>
 
-                    <tr>
-                                                <td id="id1" name="id">1</td> <!-- ID -->
-                        <td id="nom" name="nom">Hardy</td> <!-- Nom -->
-                        <td id="prenom" name="prenom">Thomas</td> <!-- Prénom -->
+              <!-- Affichage du médecin (Nom + Prénom) ou "Non attribué" -->
+              <td th:text="${bureau.medecin != null ? bureau.medecin.nom + ' ' + bureau.medecin.prenom : 'Non attribué'}"></td>
 
-                        <td><span class="label label-success">Occupé</span></td> <!-- Status -->
-                        <td>
-                            <a href="#editEmployeeModal" class="edit" data-toggle="modal">
-                                <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
-                            </a>
-                            <a href="#deleteEmployeeModal" class="delete text-danger" data-toggle="modal">
-                                <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
-                            </a>
+              <td>
+                <a th:attr="id='editServiceModal' + ${bureau.id}" class="edit" data-toggle="modal">
+                  <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+                </a>
+                <a href="#deleteEmployeeModal" class="delete text-danger" data-toggle="modal">
+                  <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
+                </a>
+              </td>
 
-                        </td>
-                    </tr>
+              <!-- Modal de modification -->
+              <div th:attr="id='editServiceModal' + ${bureau.id}" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                  <div class="modal-content shadow-lg border-0 rounded-4">
+                    <div class="modal-header bg-warning text-dark">
+                      <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2"></i>Modifier un Bureau Hospitalier</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
 
-                </tbody>
-            </table>
-          
-	</div>        
+                    <div class="modal-body">
+                      <form th:action="@{/Administrateur/bureaux/modifier}" method="post">
+                        <div class="container-fluid">
+                          <div class="row">
+                            <!-- ID de la salle (Caché) -->
+                            <input type="hidden" name="id" th:value="${bureau.id}">
+                            <!-- Nom du service -->
+                            <div class="col-md-6 mb-3">
+                              <label for="numero" class="form-label">
+                                <i class="fas fa-clinic-medical text-primary"></i> Numéro du bureau
+                              </label>
+                              <input type="number" class="form-control" id="numero" name="numero" placeholder="Numero du bureau" th:value="${bureau.numero}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="service" class="form-label">
+                                <i class="fas fa-door-open text-secondary"></i> Service concerné
+                              </label>
+                              <select class="form-select" id="service" name="service_id" required>
+                                <option th:each="serviceF : ${serviceFS}"
+                                        th:value="${serviceF.id}"
+                                        th:text="${serviceF.nom}"
+                                        th:selected="${bureau.serviceF.id == serviceF.id}">
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Boutons -->
+                        <div class="modal-footer d-flex justify-content-center">
+                          <button type="submit" class="btn btn-success rounded-3 px-4">
+                            <i class="fas fa-save me-2"></i> Enregistrer
+                          </button>
+                          <button type="button" class="btn btn-secondary rounded-3 px-4" data-dismiss="modal">
+                            <i class="fas fa-times me-2"></i> Annuler
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </tr>
+
+            <!-- Affichage si la liste est vide -->
+            <tr th:if="${#lists.isEmpty(bureaux)}">
+              <td colspan="4" class="text-center">Aucun bureau disponible</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
 </div>
 
-<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
-  <i class="fas fa-plus-circle"></i> Ajouter un bureau
-</button>
+</div>
 
-<!-- Modal structure for adding an infirmier -->
-<div id="addEmployeeModal" class="modal fade" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/submit-infirmier" method="POST">
-        <div class="modal-header bg-success text-white">
-          <h5 class="modal-title" id="addEmployeeModalLabel"><i class="fas fa-user-plus"></i> Ajouter un bureau hospitalier</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="prenom"><i class="fas fa-user"></i> ID</label>
-            <input type="text" class="form-control" id="prenom" name="prenom" placeholder="Entrez le prénom" required>
-          </div>
-          <div class="form-group">
-            <label for="nom"><i class="fas fa-user"></i> Médecin</label>
-            <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom" required>
-          </div>
-         
-          <div class="form-group">
-            <label for="service"><i class="fas fa-hospital"></i> Batiment</label>
-            <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom" required>
-                    
-          </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Ajouter</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
-        </div>
-      </form>
+</div>
     </div>
-  </div>
-</div>
+  </main>
 
-<!-- Modal structure for editing an infirmier -->
-<div id="editEmployeeModal" class="modal fade" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form action="/update-bureau" method="POST">
-        <div class="modal-header bg-warning text-dark">
-          <h5 class="modal-title" id="editEmployeeModalLabel"><i class="fas fa-pencil-alt"></i> Modifier Bureau</h5>
+  <!-- Modal d'ajout d'un bureau -->
+  <div id="addEmployeeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content p-4">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title"><i class="fas fa-hospital"></i> Ajouter un Bureau</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+
         <div class="modal-body">
-          <!-- Champ caché pour stocker l'ID de l'infirmier -->
-          <input type="hidden" id="id" name="id" value="">
-        
-          <div class="modal-body">
-            <div class="form-group">
-              <label for="prenom"><i class="fas fa-user"></i> ID</label>
-              <input type="text" class="form-control" id="prenom" name="prenom" placeholder="Entrez le prénom" required>
+          <form th:action="@{/Administrateur/bureaux/ajouter}" method="post">
+            <div class="container-fluid">
+              <div class="row">
+                <!-- Numéro du bureau -->
+                <div class="col-md-6 mb-3">
+                  <label for="numero" class="form-label">
+                    <i class="fas fa-tag text-primary"></i> Numéro du Bureau
+                  </label>
+                  <input type="number" class="form-control" id="numero" name="numero" placeholder="Numéro du bureau" required>
+                </div>
+
+              <div class="row">
+                <!-- Sélection du service concerné -->
+                <div class="col-md-12 mb-3">
+                  <label for="service" class="form-label">
+                    <i class="fas fa-briefcase-medical text-secondary"></i> Service concerné
+                  </label>
+                  <select class="form-select" id="service" name="service_id" required>
+                    <option value="">Sélectionner un service</option>
+                    <option th:each="serviceF : ${serviceFS}" th:value="${serviceF.id}" th:text="${serviceF.nom}"></option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="nom"><i class="fas fa-user"></i> Médecin</label>
-              <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom" required>
+
+            <!-- Boutons -->
+            <div class="text-center">
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Enregistrer
+              </button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                <i class="fas fa-times"></i> Annuler
+              </button>
             </div>
-           
-            <div class="form-group">
-              <label for="service"><i class="fas fa-hospital"></i> Batiment</label>
-              <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom" required>
-                      
             </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Ajouter</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-  
-         
-         
-          <div class="modal-footer">
-          <button type="submit" class="btn btn-warning"><i class="fas fa-pencil-alt"></i> Mettre à jour</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</main>
+
+
 
 
 
@@ -486,18 +508,17 @@
 
 
 
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/chart.js/chart.umd.js"></script>
-  <script src="assets/vendor/echarts/echarts.min.js"></script>
-  <script src="assets/vendor/quill/quill.js"></script>
-  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-
-  <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
+<!-- Vendor JS Files -->
+<script th:src="@{/assets/vendor/apexcharts/apexcharts.min.js}"></script>
+<script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/assets/vendor/chart.js/chart.umd.js}"></script>
+<script th:src="@{/assets/vendor/echarts/echarts.min.js}"></script>
+<script th:src="@{/assets/vendor/quill/quill.js}"></script>
+<script th:src="@{/assets/vendor/simple-datatables/simple-datatables.js}"></script>
+<script th:src="@{/assets/vendor/tinymce/tinymce.min.js}"></script>
+<script th:src="@{/assets/vendor/php-email-form/validate.js}"></script>
+<!-- Template Main JS File -->
+<script th:src="@{/assets/js/main.js}"></script>
 
 </body>
 

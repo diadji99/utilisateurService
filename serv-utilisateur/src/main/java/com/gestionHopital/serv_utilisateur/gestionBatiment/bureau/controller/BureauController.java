@@ -63,9 +63,9 @@ public class BureauController {
         return "redirect:/Administrateur/bureaux";
     }
 
-    @PostMapping("/{id}/modifier")
-    public String modifier(@PathVariable Long id, @ModelAttribute Bureau update, @RequestParam Long service, RedirectAttributes redirectAttributes) {
-        Bureau existing = bureauService.findById(id);
+    @PostMapping("/modifier")
+    public String modifier(@ModelAttribute Bureau update, @RequestParam Long service, RedirectAttributes redirectAttributes) {
+        Bureau existing = bureauService.findById(update.getId());
         if (existing != null) {
             ServiceF serviceF = serviceService.findById(service);
             update.setServiceF(serviceF);
