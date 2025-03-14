@@ -369,9 +369,20 @@
                                                         <label for="nomService" class="form-label">
                                                             <i class="fas fa-clinic-medical text-primary"></i> Nom du Service
                                                         </label>
-                                                        <input type="text" class="form-control" id="nomService" name="nom" placeholder="Ex: Urgences, Pédiatrie" th:value="${service.nom}" required>
+                                                        <select class="form-control" id="nomService" name="nom" required th:value="${service.nom}">
+                                                            <option value="">Sélectionner un service</option>
+                                                            <option value="Urgences">Urgences</option>
+                                                            <option value="Pédiatrie">Pédiatrie</option>
+                                                            <option value="Chirurgie générale">Chirurgie générale</option>
+                                                            <option value="Cardiologie">Cardiologie</option>
+                                                            <option value="Neurologie">Neurologie</option>
+                                                            <option value="Gastro-entérologie">Gastro-entérologie</option>
+                                                            <option value="Oncologie">Oncologie</option>
+                                                            <option value="Maternité">Maternité</option>
+                                                            <option value="Orthopédie">Orthopédie</option>
+                                                            <option value="Psychiatrie">Psychiatrie</option>
+                                                        </select>
                                                     </div>
-
                                                     <!-- Chef de service (optionnel) -->
                                                     <div class="col-md-6 mb-3">
                                                         <label for="chefDeService" class="form-label">
@@ -467,9 +478,20 @@
                                         <label for="nomService" class="form-label">
                                             <i class="fas fa-clinic-medical text-primary"></i> Nom du Service
                                         </label>
-                                        <input type="text" class="form-control" id="nomService" name="nom" placeholder="Ex: Urgences, Pédiatrie" required>
+                                        <select class="form-control" id="nomService" name="nom" required>
+                                            <option value="">Sélectionner un service</option>
+                                            <option value="Urgences">Urgences</option>
+                                            <option value="Pédiatrie">Pédiatrie</option>
+                                            <option value="Chirurgie générale">Chirurgie générale</option>
+                                            <option value="Cardiologie">Cardiologie</option>
+                                            <option value="Neurologie">Neurologie</option>
+                                            <option value="Gastro-entérologie">Gastro-entérologie</option>
+                                            <option value="Oncologie">Oncologie</option>
+                                            <option value="Maternité">Maternité</option>
+                                            <option value="Orthopédie">Orthopédie</option>
+                                            <option value="Psychiatrie">Psychiatrie</option>
+                                        </select>
                                     </div>
-
                                     <!-- Chef de service (optionnel) -->
                                     <div class="col-md-6 mb-3">
                                         <label for="chefDeService" class="form-label">
