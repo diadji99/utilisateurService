@@ -345,14 +345,13 @@
               <td th:text="${bureau.medecin != null ? bureau.medecin.nom + ' ' + bureau.medecin.prenom : 'Non attribué'}"></td>
 
               <td>
-                <a th:attr="id='editServiceModal' + ${bureau.id}" class="edit" data-toggle="modal">
-                  <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+                <a th:data-bs-target="'#editServiceModal' + ${bureau.id}" data-bs-toggle="modal" class="edit" style="cursor:pointer;">
+                  <i class="material-icons" data-toggle="tooltip" title="Modifier">&#xE254;</i>
                 </a>
-                <a href="#deleteEmployeeModal" class="delete text-danger" data-toggle="modal">
+                <a th:data-bs-target="'#deleteEmployeeModal' + ${bureau.id}" class="delete text-danger" data-bs-toggle="modal" style="cursor:pointer;">
                   <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
                 </a>
               </td>
-
               <!-- Modal de modification -->
               <div th:attr="id='editServiceModal' + ${bureau.id}" class="modal fade" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -382,7 +381,7 @@
                                 <i class="fas fa-door-open text-secondary"></i> Service concerné
                               </label>
                               <select class="form-select" id="service" name="service_id" required>
-                                <option th:each="serviceF : ${serviceFS}"
+                              <option th:each="serviceF : ${serviceFS}"
                                         th:value="${serviceF.id}"
                                         th:text="${serviceF.nom}"
                                         th:selected="${bureau.serviceF.id == serviceF.id}">
@@ -405,6 +404,33 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Modal -->
+              <div class="modal fade" th:attr="id='deleteEmployeeModal' + ${bureau.id}" tabindex="-1" aria-labelledby="deleteEmployeeModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                    <form th:action="@{/Administrateur/bureaux/supprimer}" method="post">
+                      <!-- Ajout de l'input caché pour envoyer l'id -->
+                      <input type="hidden" name="id" th:value="${bureau.id}" />
+
+                      <div class="modal-header bg-danger text-light">
+                        <h5 class="modal-title" id="deleteEmployeeModalLabel"><i class="fas fa-trash-alt">
+                        </i> Suppression d'un bureau
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Êtes-vous sûr de vouloir supprimer ce bureau ? Cette action est irréversible.</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
 
             </tr>
 
@@ -473,39 +499,6 @@
       </div>
     </div>
   </div>
-
-
-
-
-
-
-
-<!-- Delete Modal HTML -->
-
-
-<!-- Modal structure for deleting an infirmier -->
-<div id="deleteEmployeeModal" class="modal fade" tabindex="-1" aria-labelledby="deleteEmployeeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="/delete-infirmier" method="POST">
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title" id="deleteEmployeeModalLabel"><i class="fas fa-trash-alt"></i> Supprimer un Infirmier</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p><i class="fas fa-exclamation-triangle"></i> Êtes-vous sûr de vouloir supprimer cet infirmier ? Cette action est irréversible.</p>
-          <!-- Champ caché pour stocker l'ID de l'infirmier -->
-          <input type="hidden" id="id" name="id" value="">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
-          <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 
 
 <!-- Vendor JS Files -->

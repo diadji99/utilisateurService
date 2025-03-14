@@ -64,7 +64,7 @@ public class BureauController {
     }
 
     @PostMapping("/modifier")
-    public String modifier(@ModelAttribute Bureau update, @RequestParam Long service, RedirectAttributes redirectAttributes) {
+    public String modifier(@ModelAttribute Bureau update, @RequestParam("service_id") Long service, RedirectAttributes redirectAttributes) {
         Bureau existing = bureauService.findById(update.getId());
         if (existing != null) {
             ServiceF serviceF = serviceService.findById(service);
@@ -81,8 +81,8 @@ public class BureauController {
         return "redirect:/Administrateur/bureaux";
     }
 
-    @PostMapping("/{id}/supprimer")
-    public String supprimer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/supprimer")
+    public String supprimer(@RequestParam(name = "id", required = true) Long id, RedirectAttributes redirectAttributes) {
         Bureau bureau = bureauService.findById(id);
         if (bureau != null) {
             bureauService.delete(bureau);
